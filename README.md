@@ -1,5 +1,9 @@
 # vehicules-quebec
 
+## Objectif
+
+Ce dépôt fait partie d'une série visant à proposer des versions québécoises de jeux de données populaires en science des données. L'objectif est de fournir des alternatives pédagogiques locales, reproductibles et documentées, construites à partir de données réelles du Québec et du Canada plutôt que de jeux classiques très utilisés comme `mtcars`.
+
 Infrastructure reproductible pour construire un jeu pédagogique québécois et
 canadien inspiré de `mtcars`, à partir de données ouvertes réelles de la SAAQ et
 de Ressources naturelles Canada (RNCan).
