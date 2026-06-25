@@ -1,0 +1,202 @@
+verified_on: "2026-06-25"
+project_release: "0.1.0"
+
+sources:
+  - id: saaq_vehicles_2022
+    enabled: true
+    publisher: "Société de l'assurance automobile du Québec (SAAQ)"
+    dataset_title: "Véhicules en circulation"
+    source_family: "saaq"
+    source_kind: "CSV"
+    method: "http_file"
+    url: "https://dq-prd-bucket1.s3.ca-central-1.amazonaws.com/saaq/Vehicule_En_Circulation_2022.csv"
+    resource_page: "https://www.donneesquebec.ca/recherche/dataset/vehicules-en-circulation"
+    filename: "Vehicule_En_Circulation_2022.csv"
+    snapshot_year: 2022
+    language: "fr"
+    license: "Creative Commons Attribution 4.0 (CC BY 4.0) – Québec"
+    license_url: "https://www.donneesquebec.ca/fr/licence/"
+    download_allowed: true
+    large_file: true
+    notes: >-
+      Dernier millésime de données dont le fichier annuel a été vérifié dans le
+      catalogue lors de l'audit du 2026-06-25. Vérifier manuellement l'existence
+      d'un millésime plus récent avant chaque nouvelle publication.
+
+  - id: saaq_documentation
+    enabled: true
+    publisher: "Société de l'assurance automobile du Québec (SAAQ)"
+    dataset_title: "Véhicules en circulation – Documentation des données ouvertes"
+    source_family: "saaq_documentation"
+    source_kind: "PDF"
+    method: "http_file"
+    url: "https://www.donneesquebec.ca/recherche/dataset/4aea7984-10ec-4d4f-80e4-5bb9a0006996/resource/00ea3ac1-da3c-4ece-aa8c-a2e88529447b/download/vehicules-circulation-documentation.pdf"
+    resource_page: "https://www.donneesquebec.ca/recherche/dataset/vehicules-en-circulation"
+    filename: "vehicules-circulation-documentation.pdf"
+    language: "fr"
+    license: "Creative Commons Attribution 4.0 (CC BY 4.0) – Québec"
+    license_url: "https://www.donneesquebec.ca/fr/licence/"
+    download_allowed: true
+    large_file: false
+
+  - id: rncan_fcr_1995_2014_en
+    enabled: true
+    publisher: "Natural Resources Canada / Ressources naturelles Canada"
+    dataset_title: "1995-2014 Fuel Consumption Ratings"
+    source_family: "rncan_standard"
+    source_kind: "CSV / CKAN DataStore API"
+    method: "ckan_datastore"
+    api_endpoint: "https://open.canada.ca/data/en/api/3/action/datastore_search"
+    dataset_page: "https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64"
+    resource_page: "https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64/resource/67a7f9ee-9c47-43a6-ab06-5e7242e12638"
+    resource_id: "67a7f9ee-9c47-43a6-ab06-5e7242e12638"
+    language: "en"
+    license: "Open Government Licence – Canada"
+    license_url: "https://open.canada.ca/en/open-government-licence-canada"
+    download_allowed: true
+    large_file: false
+    notes: >-
+      Cotes ajustées rétrospectivement par RNCan pour refléter
+      approximativement la procédure à cinq cycles. Les véhicules n'ont pas
+      été retestés; ne pas présenter ces valeurs comme des mesures cinq cycles
+      observées directement.
+
+  - id: rncan_fcr_1995_2014_original_en
+    enabled: false
+    publisher: "Natural Resources Canada / Ressources naturelles Canada"
+    dataset_title: "Original Fuel Consumption Ratings 1995-2014"
+    source_family: "rncan_standard_original"
+    source_kind: "CSV / CKAN DataStore API"
+    method: "manual_reference"
+    api_endpoint: "https://open.canada.ca/data/en/api/3/action/datastore_search"
+    dataset_page: "https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64"
+    resource_page: "https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64/resource/29bcf157-9297-4d6a-9695-dfd816bc32ca"
+    resource_id: "29bcf157-9297-4d6a-9695-dfd816bc32ca"
+    language: "en"
+    license: "Open Government Licence – Canada"
+    license_url: "https://open.canada.ca/en/open-government-licence-canada"
+    download_allowed: true
+    large_file: false
+    notes: >-
+      Cotes originales à deux cycles. Ressource désactivée pour éviter de
+      dupliquer les millésimes 1995-2014 dans le jeu principal; à utiliser dans
+      une analyse de sensibilité séparée avec provenance explicite.
+
+  - id: rncan_fcr_2015_2024_en
+    enabled: true
+    publisher: "Natural Resources Canada / Ressources naturelles Canada"
+    dataset_title: "2015-2024 Fuel Consumption Ratings (2026-03-23)"
+    source_family: "rncan_standard"
+    source_kind: "CSV / CKAN DataStore API"
+    method: "ckan_datastore"
+    api_endpoint: "https://open.canada.ca/data/en/api/3/action/datastore_search"
+    dataset_page: "https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64"
+    resource_page: "https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64/resource/c98b9dc8-b23f-4cd8-8b19-e892da1e4688"
+    resource_id: "c98b9dc8-b23f-4cd8-8b19-e892da1e4688"
+    language: "en"
+    license: "Open Government Licence – Canada"
+    license_url: "https://open.canada.ca/en/open-government-licence-canada"
+    download_allowed: true
+    large_file: false
+
+  - id: rncan_fcr_2025_en
+    enabled: true
+    publisher: "Natural Resources Canada / Ressources naturelles Canada"
+    dataset_title: "2025 Fuel Consumption Ratings (2026-06-02)"
+    source_family: "rncan_standard"
+    source_kind: "CSV / CKAN DataStore API"
+    method: "ckan_datastore"
+    api_endpoint: "https://open.canada.ca/data/en/api/3/action/datastore_search"
+    dataset_page: "https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64"
+    resource_page: "https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64/resource/d589f2bc-9a85-4f65-be2f-20f17debfcb1"
+    resource_id: "d589f2bc-9a85-4f65-be2f-20f17debfcb1"
+    language: "en"
+    license: "Open Government Licence – Canada"
+    license_url: "https://open.canada.ca/en/open-government-licence-canada"
+    download_allowed: true
+    large_file: false
+
+  - id: rncan_fcr_2026_en
+    enabled: true
+    publisher: "Natural Resources Canada / Ressources naturelles Canada"
+    dataset_title: "2026 Fuel Consumption Ratings (2026-06-05)"
+    source_family: "rncan_standard"
+    source_kind: "CSV / CKAN DataStore API"
+    method: "ckan_datastore"
+    api_endpoint: "https://open.canada.ca/data/en/api/3/action/datastore_search"
+    dataset_page: "https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64"
+    resource_page: "https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64/resource/9df1b18d-d036-4783-a61c-99f1f75b3ac5"
+    resource_id: "9df1b18d-d036-4783-a61c-99f1f75b3ac5"
+    language: "en"
+    license: "Open Government Licence – Canada"
+    license_url: "https://open.canada.ca/en/open-government-licence-canada"
+    download_allowed: true
+    large_file: false
+
+  - id: rncan_bev_2012_2026_en
+    enabled: true
+    publisher: "Natural Resources Canada / Ressources naturelles Canada"
+    dataset_title: "Battery-electric vehicles 2012-2026 (2026-05-14)"
+    source_family: "rncan_bev"
+    source_kind: "CSV / CKAN DataStore API"
+    method: "ckan_datastore"
+    api_endpoint: "https://open.canada.ca/data/en/api/3/action/datastore_search"
+    dataset_page: "https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64"
+    resource_page: "https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64/resource/0b0f5a42-b00b-4b6a-9185-4d4de1424801"
+    resource_id: "0b0f5a42-b00b-4b6a-9185-4d4de1424801"
+    language: "en"
+    license: "Open Government Licence – Canada"
+    license_url: "https://open.canada.ca/en/open-government-licence-canada"
+    download_allowed: true
+    large_file: false
+
+  - id: rncan_phev_2012_2026_en
+    enabled: true
+    publisher: "Natural Resources Canada / Ressources naturelles Canada"
+    dataset_title: "Plug-in hybrid electric vehicles 2012-2026 (2026-04-07)"
+    source_family: "rncan_phev"
+    source_kind: "CSV / CKAN DataStore API"
+    method: "ckan_datastore"
+    api_endpoint: "https://open.canada.ca/data/en/api/3/action/datastore_search"
+    dataset_page: "https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64"
+    resource_page: "https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64/resource/8812228b-a6aa-4303-b3d0-66489225120d"
+    resource_id: "8812228b-a6aa-4303-b3d0-66489225120d"
+    language: "en"
+    license: "Open Government Licence – Canada"
+    license_url: "https://open.canada.ca/en/open-government-licence-canada"
+    download_allowed: true
+    large_file: false
+
+  - id: rncan_fuel_consumption_guide_2026
+    enabled: false
+    publisher: "Natural Resources Canada / Ressources naturelles Canada"
+    dataset_title: "2026 Fuel Consumption Guide"
+    source_family: "rncan_documentation"
+    source_kind: "Web page / guide"
+    method: "manual_reference"
+    url: "https://natural-resources.canada.ca/energy-efficiency/transportation-energy-efficiency/fuel-consumption-guide"
+    filename: null
+    language: "en/fr"
+    license: "Government of Canada terms"
+    license_url: "https://natural-resources.canada.ca/terms-conditions"
+    download_allowed: false
+    large_file: false
+    notes: "Conserver l'URL et la date d'accès; ne pas aspirer le site."
+
+  - id: transport_canada_cvs_optional
+    enabled: false
+    publisher: "Transport Canada"
+    dataset_title: "Canadian Vehicle Specifications (CVS)"
+    source_family: "transport_canada_cvs"
+    source_kind: "CSV / API"
+    method: "manual_reference"
+    url: "https://open.canada.ca/data/en/dataset/913f8940-036a-45f2-a5f2-19bde76c1252"
+    filename: null
+    language: "en"
+    license: "Open Government Licence – Canada"
+    license_url: "https://open.canada.ca/en/open-government-licence-canada"
+    download_allowed: true
+    large_file: false
+    notes: >-
+      Source facultative pour dimensions et masse à vide. La jointure par
+      année-marque-modèle peut rester ambiguë au niveau des versions.

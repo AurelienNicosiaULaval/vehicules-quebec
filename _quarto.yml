@@ -1,0 +1,5 @@
+project:
+  type: default
+  execute-dir: project
+  render:
+    - docs/validation_report.qmd

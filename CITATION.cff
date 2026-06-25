@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "Veuillez citer ce dépôt et les sources administratives originales. Remplacez l’auteur modèle avant une publication officielle."
+title: "vehicules-quebec : jeu pédagogique reproductible sur les véhicules, la consommation et les immatriculations"
+type: dataset
+version: 0.1.0
+date-released: 2026-06-25
+authors:
+  - family-names: "Nicosia"
+    given-names: "Aurelien"
+keywords:
+  - véhicules
+  - Québec
+  - consommation de carburant
+  - émissions de CO2
+  - données ouvertes
+  - enseignement de la statistique
+abstract: >-
+  Infrastructure reproductible pour construire un jeu pédagogique inspiré de
+  mtcars à partir de données ouvertes de la SAAQ et de Ressources naturelles
+  Canada. Les dénombrements québécois ne sont attribués à une configuration de
+  véhicule que lorsque la jointure est vérifiée et non ambiguë.

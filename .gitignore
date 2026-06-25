@@ -1,0 +1,30 @@
+# Données brutes et sorties reproductibles
+/data_raw/**
+!/data_raw/README.md
+!/data_raw/.gitkeep
+/data_intermediate/**
+!/data_intermediate/README.md
+!/data_intermediate/.gitkeep
+/data_clean/**
+!/data_clean/README.md
+!/data_clean/.gitkeep
+/validation/**
+!/validation/README.md
+!/validation/.gitkeep
+
+# R / Quarto
+.Rhistory
+.RData
+.Rproj.user/
+renv/library/
+renv/staging/
+_freeze/
+_site/
+*.html
+
+# Système
+.DS_Store
+Thumbs.db
+
+/.quarto/
+**/*.quarto_ipynb

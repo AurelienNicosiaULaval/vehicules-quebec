@@ -1,0 +1,368 @@
+---
+title: "Rapport de validation — vehicules-quebec"
+subtitle: "Contrôles non destructifs de contenu, de jointure et d’unités"
+date: today
+lang: fr
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    embed-resources: true
+execute:
+  echo: true
+  warning: true
+  message: false
+params:
+  data_path: "data_clean/vehicules_quebec.csv"
+  small_path: "data_clean/vehicules_quebec_small.csv"
+  candidates_path: "data_intermediate/join_candidates.csv"
+  unmatched_path: "data_intermediate/unmatched_saaq.csv"
+  join_summary_path: "data_intermediate/join_summary.csv"
+  dictionary_path: "data_clean/vehicules_quebec_dictionary.csv"
+---
+
+## Portée
+
+Ce rapport signale les anomalies possibles; il ne remplace, ne tronque ni
+n’impute aucune valeur. Les cotes RNCan sont des valeurs issues de procédures
+d’essai normalisées. Les comptes SAAQ ne sont considérés comme appariés que
+lorsqu’une configuration unique satisfait la règle documentée.
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(knitr)
+
+fs::dir_create("validation")
+
+required_files <- c(params$data_path, params$dictionary_path)
+missing_files <- required_files[!file.exists(required_files)]
+if (length(missing_files) > 0) {
+  stop("Fichiers requis absents : ", paste(missing_files, collapse = ", "))
+}
+
+vehicles <- read_csv(params$data_path, show_col_types = FALSE, na = c("", "NA"))
+dictionary <- read_csv(params$dictionary_path, show_col_types = FALSE)
+small <- if (file.exists(params$small_path))
+  read_csv(params$small_path, show_col_types = FALSE, na = c("", "NA")) else tibble()
+candidates <- if (file.exists(params$candidates_path))
+  read_csv(params$candidates_path, show_col_types = FALSE, na = c("", "NA")) else tibble()
+unmatched <- if (file.exists(params$unmatched_path))
+  read_csv(params$unmatched_path, show_col_types = FALSE, na = c("", "NA")) else tibble()
+join_summary <- if (file.exists(params$join_summary_path))
+  read_csv(params$join_summary_path, show_col_types = FALSE) else tibble()
+
+pct <- function(x, digits = 1) {
+  ifelse(is.na(x), NA_character_, paste0(format(round(100 * x, digits), nsmall = digits), " %"))
+}
+```
+
+## Résumé de la couverture
+
+```{r}
+confirmed <- sum(vehicles$qc_presence_status == "confirmed_by_exact_audited_join", na.rm = TRUE)
+overview <- tibble(
+  indicateur = c(
+    "Lignes", "Marques", "Modèles (marque–modèle)", "Années-modèles", "Types de carburant",
+    "Configurations avec preuve Québec exacte", "Taux de preuve Québec au niveau des lignes",
+    "Lignes du petit jeu"
+  ),
+  valeur = c(
+    nrow(vehicles),
+    n_distinct(vehicles$make, na.rm = TRUE),
+    {
+      complete_identity <- !is.na(vehicles$make) & !is.na(vehicles$model)
+      n_distinct(paste(
+        vehicles$make[complete_identity],
+        vehicles$model[complete_identity],
+        sep = "|"
+      ))
+    },
+    n_distinct(vehicles$model_year, na.rm = TRUE),
+    n_distinct(vehicles$fuel_type, na.rm = TRUE),
+    confirmed,
+    pct(if (nrow(vehicles) == 0) NA_real_ else confirmed / nrow(vehicles)),
+    nrow(small)
+  )
+)
+kable(overview)
+```
+
+Le taux précédent est un taux au niveau des **configurations RNCan**, pas un
+taux de couverture du parc automobile québécois. Une même famille de modèle
+peut comporter plusieurs versions RNCan et une SAAQ ne publie pas la
+transmission; cette différence de grain doit rester visible.
+
+### Résumé de la jointure SAAQ–RNCan
+
+```{r}
+if (nrow(join_summary) > 0) {
+  kable(join_summary)
+} else {
+  cat("Aucun résumé de jointure disponible.\n")
+}
+```
+
+```{r}
+if (all(c("saaq_group_id", "candidate_status") %in% names(candidates))) {
+  candidate_status_table <- candidates |>
+    count(candidate_status, sort = TRUE, name = "n_candidate_rows")
+  kable(candidate_status_table)
+} else {
+  cat("Aucune table détaillée de candidats disponible.\n")
+}
+```
+
+## Valeurs manquantes
+
+```{r}
+missingness <- tibble(
+  variable = names(vehicles),
+  n_missing = map_int(vehicles, ~ sum(is.na(.x))),
+  pct_missing = map_dbl(
+    vehicles,
+    ~ if (nrow(vehicles) == 0) NA_real_ else mean(is.na(.x)) * 100
+  )
+) |>
+  arrange(desc(pct_missing), variable)
+
+kable(missingness, digits = 1)
+write_csv(missingness, "validation/missingness_from_qmd.csv", na = "")
+```
+
+Une forte proportion de valeurs manquantes peut être attendue : par exemple,
+les cylindres et la cylindrée sont non applicables aux véhicules électriques,
+et les comptes québécois restent absents lorsqu’aucune jointure exacte n’est
+possible.
+
+## Distribution de la consommation
+
+```{r}
+fuel_consumption <- vehicles |>
+  filter(!is.na(combined_l_per_100km))
+
+if (nrow(fuel_consumption) > 0) {
+  ggplot(fuel_consumption, aes(combined_l_per_100km)) +
+    geom_histogram(bins = 30) +
+    labs(
+      x = "Consommation combinée (L/100 km)", y = "Nombre de configurations",
+      title = "Distribution de la consommation de carburant liquide"
+    )
+} else {
+  cat("Aucune valeur L/100 km disponible.\n")
+}
+```
+
+```{r}
+if (nrow(fuel_consumption) > 0) {
+  fuel_consumption |>
+    group_by(vehicle_class_group) |>
+    summarise(
+      n = n(),
+      moyenne = mean(combined_l_per_100km, na.rm = TRUE),
+      mediane = median(combined_l_per_100km, na.rm = TRUE),
+      q1 = quantile(combined_l_per_100km, 0.25, na.rm = TRUE),
+      q3 = quantile(combined_l_per_100km, 0.75, na.rm = TRUE),
+      .groups = "drop"
+    ) |>
+    arrange(mediane) |>
+    kable(digits = 2)
+}
+```
+
+## Distribution des émissions de CO2
+
+```{r}
+co2_data <- vehicles |>
+  filter(!is.na(co2_g_per_km))
+
+if (nrow(co2_data) > 0) {
+  ggplot(co2_data, aes(co2_g_per_km)) +
+    geom_histogram(bins = 30) +
+    labs(
+      x = "CO2 à l’échappement (g/km)", y = "Nombre de configurations",
+      title = "Distribution des émissions combinées de CO2"
+    )
+} else {
+  cat("Aucune valeur de CO2 disponible.\n")
+}
+```
+
+```{r}
+plot_data <- vehicles |>
+  filter(!is.na(combined_l_per_100km), !is.na(co2_g_per_km))
+if (nrow(plot_data) > 0) {
+  ggplot(plot_data, aes(combined_l_per_100km, co2_g_per_km)) +
+    geom_point(alpha = 0.5) +
+    labs(
+      x = "Consommation combinée (L/100 km)",
+      y = "CO2 à l’échappement (g/km)",
+      title = "Consommation et émissions"
+    )
+}
+```
+
+## Cohérence des unités et valeurs
+
+Les bornes ci-dessous sont des bornes de **révision**, volontairement larges.
+Une ligne signalée n’est pas automatiquement erronée.
+
+```{r}
+current_year <- as.integer(format(Sys.Date(), "%Y"))
+checks <- vehicles |>
+  transmute(
+    vehicle_id, make, model, model_year,
+    flag_year = !is.na(model_year) & (model_year < 1900 | model_year > current_year + 1),
+    flag_engine = !is.na(engine_size_l) & (engine_size_l < 0.1 | engine_size_l > 10),
+    flag_consumption = !is.na(combined_l_per_100km) &
+      (combined_l_per_100km < 0.5 | combined_l_per_100km > 50),
+    flag_co2 = !is.na(co2_g_per_km) & (co2_g_per_km < 0 | co2_g_per_km > 1000),
+    flag_co2_rating = !is.na(co2_rating) & !(co2_rating %in% 1:10),
+    flag_smog_rating = !is.na(smog_rating) & !(smog_rating %in% 1:10),
+    flag_combined_interval =
+      !is.na(city_l_per_100km) & !is.na(highway_l_per_100km) &
+      !is.na(combined_l_per_100km) &
+      (combined_l_per_100km < pmin(city_l_per_100km, highway_l_per_100km) - 0.2 |
+       combined_l_per_100km > pmax(city_l_per_100km, highway_l_per_100km) + 0.2),
+    flag_registration_count = !is.na(number_registered_qc) &
+      (number_registered_qc < 0 | number_registered_qc != round(number_registered_qc))
+  )
+
+check_summary <- checks |>
+  summarise(across(starts_with("flag_"), ~ sum(.x, na.rm = TRUE))) |>
+  pivot_longer(everything(), names_to = "controle", values_to = "n_lignes") |>
+  arrange(desc(n_lignes))
+kable(check_summary)
+```
+
+### Vérification de la conversion mpg
+
+```{r}
+mpg_check <- vehicles |>
+  filter(
+    combined_mpg_origin == "derived_282.48_divided_by_combined_l_per_100km",
+    !is.na(combined_l_per_100km), !is.na(combined_mpg)
+  ) |>
+  mutate(
+    mpg_recalculated = 282.48 / combined_l_per_100km,
+    absolute_difference = abs(combined_mpg - mpg_recalculated)
+  )
+
+if (nrow(mpg_check) > 0) {
+  kable(
+    mpg_check |>
+      summarise(
+        n = n(),
+        max_absolute_difference = max(absolute_difference, na.rm = TRUE)
+      ),
+    digits = 8
+  )
+} else {
+  cat("Aucune cote mpg dérivée à vérifier.\n")
+}
+```
+
+## Lignes suspectes
+
+```{r}
+suspect_rows <- checks |>
+  filter(if_any(starts_with("flag_"), ~ .x %in% TRUE))
+
+kable(head(suspect_rows, 100))
+write_csv(suspect_rows, "validation/suspect_rows_from_qmd.csv", na = "")
+```
+
+## Doublons d’identifiant
+
+```{r}
+duplicate_ids <- vehicles |>
+  count(vehicle_id, sort = TRUE) |>
+  filter(n > 1)
+kable(duplicate_ids)
+```
+
+## Cas SAAQ non appariés
+
+```{r}
+if (nrow(unmatched) > 0 && "unmatched_reason" %in% names(unmatched)) {
+  unmatched_summary <- unmatched |>
+    group_by(unmatched_reason) |>
+    summarise(
+      n_groups = n(),
+      n_vehicles = if ("number_registered_qc" %in% names(unmatched))
+        sum(number_registered_qc, na.rm = TRUE) else NA_real_,
+      .groups = "drop"
+    ) |>
+    arrange(desc(n_vehicles), desc(n_groups))
+  kable(unmatched_summary)
+  write_csv(unmatched_summary, "validation/unmatched_summary_from_qmd.csv", na = "")
+} else {
+  cat("Aucune table de non-appariés disponible.\n")
+}
+```
+
+```{r}
+if (nrow(unmatched) > 0) {
+  kable(head(unmatched, 100))
+}
+```
+
+## Couverture du petit jeu pédagogique
+
+```{r}
+if (nrow(small) > 0) {
+  coverage <- tibble(
+    critere = c(
+      "Compactes", "Automobiles", "VUS", "Camionnettes",
+      "Hybrides ou PHEV", "Électriques à batterie", "Essence",
+      "Millésime 2014 ou antérieur", "Millésime 2019 ou ultérieur"
+    ),
+    present = c(
+      any(
+        small$vehicle_class_group == "passenger_car" &
+          small$vehicle_size_group %in% c("minicompact", "subcompact", "compact"),
+        na.rm = TRUE
+      ),
+      any(small$vehicle_class_group == "passenger_car", na.rm = TRUE),
+      any(small$vehicle_class_group == "suv", na.rm = TRUE),
+      any(small$vehicle_class_group == "pickup", na.rm = TRUE),
+      any(small$powertrain_group %in% c("HEV_text_derived", "PHEV"), na.rm = TRUE),
+      any(small$powertrain_group == "BEV", na.rm = TRUE),
+      any(small$powertrain_group == "gasoline", na.rm = TRUE),
+      any(small$model_year <= 2014, na.rm = TRUE),
+      any(small$model_year >= 2019, na.rm = TRUE)
+    )
+  )
+  kable(coverage)
+} else {
+  cat("Le petit jeu est vide. En mode Québec strict, cela peut indiquer qu’aucune jointure exacte n’est encore disponible.\n")
+}
+```
+
+## Dictionnaire et provenance
+
+```{r}
+required_dictionary_fields <- c(
+  "variable", "type", "unit", "description", "data_role",
+  "primary_source", "derivation_or_rule", "missingness_policy", "quality_checks"
+)
+dictionary_check <- tibble(
+  test = c("Colonnes requises du dictionnaire", "Variables du jeu documentées"),
+  success = c(
+    all(required_dictionary_fields %in% names(dictionary)),
+    all(names(vehicles) %in% dictionary$variable)
+  ),
+  detail = c(
+    paste(setdiff(required_dictionary_fields, names(dictionary)), collapse = ", "),
+    paste(setdiff(names(vehicles), dictionary$variable), collapse = ", ")
+  )
+)
+kable(dictionary_check)
+```
+
+## Reproductibilité
+
+```{r}
+cat(paste(capture.output(sessionInfo()), collapse = "\n"))
+```

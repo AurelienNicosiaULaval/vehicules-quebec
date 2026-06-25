@@ -1,0 +1,24 @@
+project:
+  name: "vehicules-quebec"
+  release: "0.1.0"
+  verified_on: "2026-06-25"
+  default_saaq_snapshot_year: 2022
+
+cleaning:
+  saaq_light_vehicle_type_codes: ["AU"]
+  saaq_light_vehicle_class_codes: ["PAU", "CAU", "RAU"]
+  engine_size_tolerance_l: 0.11
+  small_sample_target_n: 64
+  strict_small_sample_qc_only: false
+  derive_missing_combined_mpg: true
+  imperial_mpg_constant: 282.48
+
+validation:
+  model_year_min: 1900
+  model_year_future_tolerance: 1
+  engine_size_l_min: 0.1
+  engine_size_l_max: 10.0
+  fuel_l_per_100km_min: 0.5
+  fuel_l_per_100km_max: 50.0
+  co2_g_per_km_min: 0
+  co2_g_per_km_max: 1000
