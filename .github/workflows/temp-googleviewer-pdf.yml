@@ -1,0 +1,44 @@
+name: Récupération temporaire des PDF via Google Viewer
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Installer les dépendances
+        run: |
+          python -m pip install --upgrade playwright pypdf
+          python -m playwright install --with-deps chromium
+      - name: Intercepter les PDF originaux dans Google Viewer
+        run: |
+          set +e
+          python temp_googleviewer_pdf_recovery.py > run_googleviewer.log 2>&1
+          status=$?
+          cat run_googleviewer.log
+          exit $status
+      - name: Créer l'archive
+        if: always()
+        run: |
+          python - <<'PY'
+          import shutil
+          shutil.make_archive("notes-master-math-france-googleviewer", "zip", "notes_master_math_france_googleviewer")
+          PY
+      - name: Publier l'archive
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notes-master-math-france-googleviewer
+          path: |
+            notes-master-math-france-googleviewer.zip
+            notes_master_math_france_googleviewer/manifest.csv
+            notes_master_math_france_googleviewer/manifest.json
+            run_googleviewer.log
+          if-no-files-found: error
+          retention-days: 3
