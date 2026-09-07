@@ -1,238 +1,145 @@
-# vehicules-quebec
+# Véhicules : données canadiennes et parc québécois
 
-## Objectif
+Un jeu pédagogique de 64 configurations de l’année modèle 2025, accompagné
+d’une activité exploratoire en R et d’un portrait distinct du parc québécois.
+Version 1.0.0, 7 septembre 2026.
 
-Ce dépôt fait partie d'une série visant à proposer des versions québécoises de jeux de données populaires en science des données. L'objectif est de fournir des alternatives pédagogiques locales, reproductibles et documentées, construites à partir de données réelles du Québec et du Canada plutôt que de jeux classiques très utilisés comme `mtcars`.
+## Commencer dans RStudio
 
-Infrastructure reproductible pour construire un jeu pédagogique québécois et
-canadien inspiré de `mtcars`, à partir de données ouvertes réelles de la SAAQ et
-de Ressources naturelles Canada (RNCan).
+1. Télécharger la [trousse pédagogique v1.0.0](https://github.com/AurelienNicosiaULaval/vehicules-quebec/releases/download/v1.0.0/vehicules-quebec-v1.0.0.zip).
+2. Décompresser l’archive et ouvrir `vehicules-quebec.Rproj`.
+3. Ouvrir `docs/explorer_les_vehicules.html` pour lire l’activité ou `examples/01_explorer_les_vehicules.R` pour exécuter le script.
 
-> **État du dépôt :** échafaudage reproductible, sans valeurs inventées. Le
-> dépôt fourni ne contient pas les fichiers administratifs volumineux ni un jeu
-> prérempli. Les CSV propres sont produits par les scripts après collecte.
-
-## Diagnostic en une phrase
-
-Les spécifications, cotes de consommation et émissions RNCan sont directement
-exploitables, et les comptes SAAQ sont directement calculables. En revanche, un
-compte québécois ne peut pas être joint automatiquement à une configuration
-RNCan : la SAAQ publie `MARQ_VEH` et `MODEL_VEH` comme codes alphanumériques de
-cinq caractères. Plusieurs valeurs sont mnémotechniques, mais elles peuvent être
-abrégées, tronquées ou normalisées et aucune table officielle ouverte de
-correspondance complète n’a été vérifiée lors de l’audit du 2026-06-25. La SAAQ
-ne publie pas non plus la transmission. Le projet laisse donc les comptes
-manquants tant qu’une jointure unique n’est pas démontrée.
-
-Le diagnostic détaillé se trouve dans [`docs/feasibility.md`](docs/feasibility.md).
-
-## Produits
-
-Après exécution, le dépôt peut produire :
-
-| Fichier | Rôle |
-|---|---|
-| `data_clean/vehicules_quebec.csv` | Configurations RNCan et statut de liaison au Québec; compte SAAQ seulement pour une jointure unique auditée |
-| `data_clean/vehicules_quebec_small.csv` | Environ 64 configurations sélectionnées de façon déterministe et stratifiée |
-| `data_clean/rncan_vehicle_specs.csv` | Table RNCan normalisée, indépendante de la jointure québécoise |
-| `data_clean/saaq_registration_summary.csv` | Agrégats provinciaux SAAQ par codes et caractéristiques |
-| `data_clean/saaq_registration_summary_by_region.csv` | Même agrégation par région administrative |
-| `data_intermediate/join_candidates.csv` | Candidats et contradictions, sans transfert automatique des comptes |
-| `data_intermediate/unmatched_saaq.csv` | Groupes SAAQ non appariés ou ambigus |
-| `data_clean/vehicules_quebec_dictionary.csv` | Dictionnaire des variables |
-| `validation/*` | Résumés, valeurs manquantes et lignes à réviser |
-
-## Grain des données
-
-- **RNCan :** une ligne par configuration publiée dans une ressource de cotes.
-- **SAAQ brut :** une ligne par véhicule autorisé à circuler au 31 décembre.
-- **SAAQ propre :** une ligne par groupe de codes et caractéristiques, avec un
-  compte dérivé par `n()`.
-- **Table intégrée :** une ligne par configuration RNCan. Le compte SAAQ reste
-  `NA` si plusieurs configurations sont possibles.
-
-Le compte n’est jamais dupliqué entre transmissions, rouages ou versions.
-
-## Installation R
-
-R 4.3 ou plus récent est recommandé. Installer les dépendances :
+L’archive contient les CSV, leurs dictionnaires, les sources utiles à leur
+vérification, les références, le code et deux documents HTML autonomes.
 
 ```r
-install.packages(c(
-  "tidyverse", "readr", "readxl", "janitor", "stringr", "stringi",
-  "dplyr", "lubridate", "arrow", "data.table", "fs", "yaml", "jsonlite",
-  "digest", "httr2", "cli", "knitr", "quarto"
-))
+# Installer une seule fois : install.packages(c("readr", "dplyr", "ggplot2"))
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+vehicules <- read_csv("data_clean/vehicules_canada_2025.csv",
+  col_types = cols(.default = col_guess(), vehicle_id = col_character()))
+vehicules |>
+  group_by(vehicle_class_group) |>
+  summarise(n = n(), consommation_mediane = median(combined_l_per_100km),
+            .groups = "drop")
+ggplot(vehicules, aes(engine_size_l, combined_l_per_100km, colour = vehicle_class_group)) +
+  geom_point() +
+  labs(x = "Cylindrée (L)", y = "Consommation combinée (L/100 km)", colour = "Classe") +
+  theme_minimal()
 ```
 
-Quarto doit aussi être installé comme application système pour produire le
-rapport HTML.
+Point d’arrêt : avoir importé les 64 configurations, produit le tableau et
+le nuage de points. L’activité poursuit avec des distributions, les unités,
+six exercices corrigés et une régression avec validation croisée facultative.
+Elle a été exécutée techniquement; aucun essai en classe n’est revendiqué.
 
-## Exécution
+## Deux tables, deux unités d’observation
 
-Depuis la racine du dépôt :
-
-```bash
-# 1. Collecte des ressources RNCan et de la documentation légère
-Rscript scripts/01_collect_vehicle_sources.R
-
-# 2. Collecte facultative du gros CSV SAAQ
-Rscript scripts/01_collect_vehicle_sources.R --include-large
-
-# 3. Nettoyage, agrégation et jointure prudente
-Rscript scripts/02_clean_vehicle_data.R
-
-# Autoriser explicitement le remplacement de sorties propres existantes
-Rscript scripts/02_clean_vehicle_data.R --overwrite-clean
-
-# 4. Rapport de validation
-quarto render docs/validation_report.qmd
-```
-
-Le script de collecte crée un nouveau dossier horodaté pour chaque source et
-n’écrase aucun brut. Le script de nettoyage refuse lui aussi de remplacer une
-sortie, sauf avec `--overwrite-clean`.
-
-L'échafaudage livré a fait l'objet de contrôles statiques, mais n'a pas été
-exécuté de bout en bout dans son environnement de création, où R et Quarto
-n'étaient pas disponibles. Les contrôles réalisés et ceux restant obligatoires
-sont consignés dans [`docs/QA_NOTES.md`](docs/QA_NOTES.md).
-
-## Petit jeu pédagogique
-
-La cible par défaut est de 64 lignes. La sélection n’est pas une liste manuelle
-de véhicules :
-
-1. définir les catégories de couverture demandées (compactes, automobiles,
-   VUS, camionnettes, hybride/PHEV, BEV, essence, ancien et récent);
-2. sélectionner de façon gloutonne et déterministe les lignes couvrant le plus
-   de catégories encore absentes, avec la preuve Québec puis `vehicle_id` comme
-   bris d’égalité;
-3. compléter en tourniquet par strate classe × motorisation × période;
-4. dans chaque strate, placer les lignes Québec confirmées avant les lignes non
-   confirmées, puis utiliser un ordre de hash stable;
-5. conserver le statut `unconfirmed` lorsque la preuve de présence québécoise
-   n’existe pas; le mode strict n’autorise que les lignes confirmées.
-
-Pour exiger uniquement des lignes québécoises confirmées :
-
-```bash
-Rscript scripts/02_clean_vehicle_data.R --strict-small-qc
-```
-
-Ce mode peut produire moins de 30 lignes, voire aucune, tant que la table de
-correspondance n’est pas disponible. Le script ne complète pas artificiellement
-les cellules manquantes.
-
-## Table de correspondance SAAQ
-
-Copier le modèle :
-
-```text
-references/saaq_make_model_crosswalk_TEMPLATE.csv
-```
-
-vers :
-
-```text
-references/saaq_make_model_crosswalk.csv
-```
-
-Chaque entrée doit comporter une source, une plage d’années, une méthode de
-vérification, une personne ou un processus responsable et le statut exact
-`verified`. Toute autre entrée est exclue de la jointure admissible. Les règles
-complètes sont dans [`references/join_rules.md`](references/join_rules.md).
-
-## Principales décisions de nettoyage
-
-- conserver les valeurs brutes et les codes dans des colonnes distinctes;
-- traiter les codes SAAQ marque-modèle comme des identifiants administratifs,
-  même lorsqu’ils ressemblent à des libellés lisibles;
-- normaliser les chaînes uniquement pour les clés, sans supprimer les versions;
-- ne pas traiter `NB_CYL = 9` de la SAAQ comme exactement neuf cylindres;
-- convertir les cm³ SAAQ en litres dans une variable dérivée distincte;
-- ne jamais placer des Le/100 km ou kWh/100 km dans une colonne L/100 km;
-- conserver le mpg RNCan; si le champ source est absent, une dérivation
-  facultative utilise `282,48 / L/100 km` et inscrit son origine;
-- utiliser par défaut la ressource RNCan 1995–2014 ajustée rétrospectivement
-  pour refléter approximativement la méthode à cinq cycles; signaler qu'il ne
-  s'agit pas de nouveaux essais et conserver la ressource originale à deux
-  cycles comme référence méthodologique séparée;
-- extraire le rouage seulement si AWD, 4WD, 4X4, FWD ou RWD est explicitement
-  présent dans le texte du modèle;
-- laisser `body_type` manquant dans les sources centrales;
-- ne pas imputer la puissance thermique, qui n’est pas publiée dans les sources
-  centrales vérifiées;
-- conserver tous les non-appariés et toutes les contradictions.
-
-## Alternatives aux variables manquantes de `mtcars`
-
-| Variable classique | Situation | Alternative honnête |
+| Fichier | Contenu | Une ligne représente |
 |---|---|---|
-| Puissance (`hp`) | Non disponible pour les moteurs thermiques dans les sources centrales | `motor_kw` pour BEV/PHEV; cylindrée; cylindres; CO2 |
-| Poids (`wt`) | Masse nette SAAQ disponible, mais non joignable sans correspondance; RNCan ne la publie pas | Statistiques de masse SAAQ pour jointures exactes; CVS facultatif pour masse à vide |
-| Rouage | Pas de champ dédié RNCan/SAAQ | Jeton explicite dans le modèle, sinon `NA` |
-| Type de carrosserie | Pas de champ détaillé commun | `vehicle_class`, `vehicle_class_group`; enrichissement externe sourcé |
+| [vehicules_canada_2025.csv](data_clean/vehicules_canada_2025.csv) | 64 configurations, 19 variables complètes | Une configuration RNCan, avec une seule configuration par modèle nommé et marque |
+| [parc_quebec_2022.csv](data_clean/parc_quebec_2022.csv) | 152 groupes totalisant 5 507 330 véhicules dans le périmètre retenu | Une combinaison de région administrative et carburant déclaré |
 
-## Structure du dépôt
+Le premier fichier décrit le marché canadien. La présence des configurations
+sélectionnées au Québec n’est pas confirmée. Les dénombrements SAAQ ne sont
+pas attribués aux configurations RNCan : aucune correspondance de marque-modèle
+et de configuration unique n’est vérifiée dans cette version.
 
-```text
-vehicules-quebec/
-├── _quarto.yml             # Exécution du rapport depuis la racine
-├── config/                 # Manifeste épinglé et paramètres
-├── data_raw/               # Bruts immuables, hors Git
-├── data_intermediate/      # Normalisations, candidats et non-appariés
-├── data_clean/             # Sorties d’analyse
-├── R/                      # Fonctions réutilisables
-├── scripts/                # Pipelines exécutables 01 et 02
-├── docs/                   # Faisabilité, activités, rapport Quarto
-├── references/             # Codes, règles, modèles de correspondance
-├── schemas/                # Schéma et dictionnaire
-├── validation/             # Contrôles produits
-├── data_dictionary.csv     # Dictionnaire source du projet
-├── LICENSE                 # MIT pour le code; données non relicenciées
-└── CITATION.cff            # Citation à personnaliser
-```
+Le portrait SAAQ porte sur les automobiles et camions légers de type `AU`
+et de classes `PAU`, `CAU` ou `RAU`, autorisés à circuler au 31 décembre 2022.
+Ce périmètre exclut d’autres usages et ne doit pas être présenté comme tout
+le parc québécois. Une région non renseignée reste non renseignée. Les codes
+de carburant inhabituels restent ceux du fichier administratif.
 
-### Rôle des dossiers demandés
+## Sélection du jeu principal
 
-- `data_raw/` : réponses API et fichiers originaux, horodatés et hachés;
-- `data_intermediate/` : objets reproductibles utiles à l’audit;
-- `data_clean/` : produits stables destinés aux cours;
-- `R/` : fonctions de lecture, normalisation, jointure, échantillonnage et
-  validation;
-- `scripts/` : points d’entrée exécutables;
-- `docs/` : diagnostic, activités et rapport;
-- `references/` : documentation, codebooks et décisions de correspondance.
+La source 2025 figée comprend 693 configurations. Parmi elles, 677 utilisent
+l’essence ordinaire ou super et disposent de toutes les variables requises.
+Les hybrides non rechargeables ne sont pas exclus; le nom du modèle ne suffit
+pas à les identifier tous. Les véhicules électriques à batterie, les hybrides
+rechargeables, le diesel et l’E85 sont hors de ce petit jeu.
 
-## Licences et attribution
+Une configuration par marque et modèle nommé est d’abord choisie par un hash
+stable, ce qui laisse 591 modèles. Un tourniquet entre les strates classe × type
+de transmission retient ensuite 64 configurations. La règle ne choisit aucune
+marque manuellement, n’impute aucune mesure et ne vise pas la représentativité
+commerciale. Le bilan des exclusions est fourni dans `validation/`.
 
-Le code du dépôt est offert sous MIT. Les données ne sont pas relicenciées : la
-SAAQ/Données Québec est attribuée selon CC BY 4.0 – Québec et les ressources
-fédérales selon la Licence du gouvernement ouvert – Canada. Les URL, dates de
-récupération, identifiants de ressource et sommes SHA-256 sont consignés par la
-collecte.
+Le résultat comprend 19 automobiles, 16 VUS, 12 familiales, 9 camionnettes et
+8 fourgonnettes. Les cinq types de transmission sont représentés.
 
-## Travaux manuels encore requis
+## Ce que ce jeu apporte par rapport à mtcars
 
-1. confirmer, avant publication, s’il existe un millésime SAAQ postérieur à
-   2022 et mettre à jour le manifeste sans remplacer silencieusement la source;
-2. télécharger le CSV SAAQ volumineux ou activer `--include-large`;
-3. obtenir auprès d’une source réutilisable une table de décodage des codes
-   marque-modèle, ou accepter que les comptes restent non attribués;
-4. réviser les jointures ambiguës, surtout lorsque plusieurs transmissions ou
-   rouages RNCan existent;
-5. décider si l’enrichissement Transports Canada CVS est nécessaire et auditer
-   ses doublons de versions;
-6. examiner le rapport de validation et documenter chaque exclusion éventuelle;
-7. décider si les analyses historiques utilisent les cotes 1995–2014 ajustées
-   ou originales, et ne jamais les fusionner comme si elles provenaient de la
-   même procédure d'essai;
-8. compléter l’auteur, le dépôt et éventuellement le DOI dans `CITATION.cff`;
-9. publier une version figée avec les sommes de contrôle et l’attribution de
-   toutes les sources.
+Il convient aux statistiques descriptives, aux comparaisons de groupes, aux
+graphiques, aux corrélations et à une initiation à la régression. Les unités
+sont documentées et les mesures sources de chaque configuration sont vérifiables.
+L’année modèle unique évite de confondre une comparaison entre véhicules avec
+une évolution sur plusieurs décennies.
 
-## Activités d’enseignement
+Il ne reproduit pas toutes les variables de `mtcars` : la puissance thermique,
+la masse, le temps sur un quart de mille et plusieurs caractéristiques mécaniques
+ne sont pas disponibles dans cette source. Les colonnes de consommation et de
+CO2 ne constituent pas autant de mesures indépendantes. Le jeu pédagogique
+n’est pas un échantillon probabiliste du parc automobile.
 
-Huit activités prêtes à adapter sont décrites dans
-[`docs/pedagogical_activities.md`](docs/pedagogical_activities.md).
+La [documentation de R](https://stat.ethz.ch/R-manual/R-patched/library/datasets/html/mtcars.html)
+précise que `mtcars$mpg` utilise le gallon américain. Le mpg publié dans la
+source RNCan utilisée est impérial; `combined_mpg_us` est une conversion
+explicitement dérivée de la consommation combinée. Une variable convertie
+ne doit pas servir de prédicteur de la variable dont elle est calculée.
+
+## Qualité et limites documentées
+
+Les 64 lignes ont été rapprochées directement des cellules du JSON RNCan figé.
+Les 152 comptes région-carburant ont été recalculés directement dans les
+lignes brutes SAAQ. Le rapport détaille les contrôles, les empreintes et les limites.
+
+Un petit écart de cohérence est conservé pour le Ford Maverick Hybrid : la cote
+publiée est 6,2 L/100 km, tandis que 55 % de 5,6 et 45 % de 6,7 donnent 6,095.
+L’écart de 0,105 dépasse légèrement la borne de 0,1 correspondant à un simple
+arrondi au dixième des trois cotes. Sa cause n’est pas établie. Les trois
+valeurs sont conservées telles que publiées et signalées dans
+`validation/cote_combinee_review.csv`.
+
+Les cotes sont issues de procédures d’essai normalisées; elles ne sont pas des
+mesures de conduite quotidienne au Québec. Les émissions sont à l’échappement,
+pas sur le cycle de vie. Une association descriptive ne démontre pas un effet causal.
+
+## Tables détaillées et diversité des motorisations
+
+La [publication v1.0.0](https://github.com/AurelienNicosiaULaval/vehicules-quebec/releases/tag/v1.0.0)
+fournit aussi une archive de données complètes et une archive des sources figées.
+Les scripts produisent 30 811 configurations RNCan de 1995 à 2026 et les agrégats
+SAAQ provinciaux et régionaux. Le fichier historique `vehicules_quebec_small.csv`
+conserve une sélection de diversité de 64 configurations, avec véhicules
+électriques et hybrides rechargeables. Il possède de nombreuses colonnes de
+provenance et des valeurs non applicables; il n’est pas le point d’entrée recommandé.
+Son nom historique ne constitue pas une preuve de présence au Québec.
+
+Les Le/100 km, kWh/100 km et L/100 km restent dans des colonnes distinctes.
+Pour les PHEV, `blended_l_per_100km` conserve la composante liquide du mode
+mixte lorsqu’elle est explicitement publiée, distincte du mode essence seul.
+Les cotes 1995–2014 ajustées rétrospectivement ne sont pas de nouveaux essais
+sur les véhicules anciens. Les étiquettes de classe françaises et anglaises
+sont harmonisées par une table explicite; les valeurs sources sont conservées.
+
+## Reproduction
+
+Le [guide de reproduction](docs/reproduction.md) explique la validation portable,
+la reconstruction complète depuis les sources figées et l’environnement R.
+Les sources déjà recueillies en juin et juillet 2026 sont conservées : cette
+version ne prétend pas inclure les mises à jour ultérieures de RNCan.
+Le catalogue SAAQ consulté le 7 septembre 2026 propose toujours 2022 comme
+millésime le plus récent de cette ressource CSV.
+
+## Sources et licences
+
+RNCan (2026), [Cotes de consommation de carburant](https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64),
+collecte du 2 juillet 2026, Licence du gouvernement ouvert – Canada.
+SAAQ (2023), [Véhicules en circulation](https://www.donneesquebec.ca/recherche/dataset/vehicules-en-circulation),
+portrait 2022, CC BY 4.0. Le code et les documents originaux sont sous MIT.
+Voir [DATA_LICENSES.md](DATA_LICENSES.md), [CITATION.cff](CITATION.cff) et les
+manifestes de `references/` pour les attributions et versions exactes.

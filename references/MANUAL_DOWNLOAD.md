@@ -1,3 +1,5 @@
+> Document de conception du 25 juin 2026. Pour la version publiée et la procédure actuelle, consulter le README et docs/reproduction.md.
+
 # Étapes manuelles de collecte
 
 ## 1. Fichier SAAQ volumineux

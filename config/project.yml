@@ -1,7 +1,7 @@
 project:
   name: "vehicules-quebec"
-  release: "0.1.0"
-  verified_on: "2026-06-25"
+  release: "1.0.0"
+  verified_on: "2026-09-07"
   default_saaq_snapshot_year: 2022
 
 cleaning:

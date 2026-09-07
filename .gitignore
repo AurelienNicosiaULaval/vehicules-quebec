@@ -28,3 +28,25 @@ Thumbs.db
 
 /.quarto/
 **/*.quarto_ipynb
+
+# Livrables pédagogiques de la version 1.0.0
+!/data_clean/vehicules_canada_2025*.csv
+!/data_clean/parc_quebec_2022*.csv
+!/data_clean/vehicules_quebec_small.csv
+!/data_clean/vehicules_quebec_dictionary.csv
+!/validation/source_verification.json
+!/validation/teaching_manifest.json
+!/validation/release_checks.csv
+!/validation/portable_checks.csv
+!/validation/release_profile.csv
+!/validation/full_class_profile.csv
+!/validation/teaching_selection.csv
+!/validation/teaching_selection_summary.csv
+!/validation/cote_combinee_review.csv
+!/validation/saaq_scope_counts.csv
+!/validation/session_info.txt
+/outputs/
+/dist/
+Rplots.pdf
+renv/cache/
+renv/sandbox/

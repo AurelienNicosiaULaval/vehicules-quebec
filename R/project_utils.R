@@ -192,11 +192,19 @@ parse_annotated_first_double <- function(x) {
 parse_kwh_per_100km_annotation <- function(x) {
   text <- stringr::str_to_upper(as.character(x), locale = "en")
   text <- stringr::str_replace_all(text, ",", ".")
-  match <- stringr::str_match(
-    text,
-    "([0-9]+(?:\\.[0-9]+)?)\\s*KWH\\s*/\\s*100\\s*KM"
-  )
-  safe_parse_double(match[, 2L])
+  # Ancien format : 2.5 (22.3 kWh/100 km).
+  # Format mixte : 5.1 ([45.4 kWh + 0.0 L]/100 km).
+  has_unit <- stringr::str_detect(text, "/\\s*100\\s*KM")
+  value <- stringr::str_match(text, "([0-9]+(?:\\.[0-9]+)?)\\s*KWH")[, 2L]
+  safe_parse_double(ifelse(has_unit, value, NA_character_))
+}
+
+parse_blended_l_per_100km_annotation <- function(x) {
+  text <- stringr::str_to_upper(as.character(x), locale = "en")
+  text <- stringr::str_replace_all(text, ",", ".")
+  value <- stringr::str_match(text,
+    "\\+\\s*([0-9]+(?:\\.[0-9]+)?)\\s*L\\]?\\s*/\\s*100\\s*KM")[, 2L]
+  safe_parse_double(value)
 }
 
 safe_parse_integer <- function(x, tolerance = 1e-8) {

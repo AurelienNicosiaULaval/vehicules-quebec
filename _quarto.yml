@@ -2,4 +2,5 @@ project:
   type: default
   execute-dir: project
   render:
+    - docs/explorer_les_vehicules.qmd
     - docs/validation_report.qmd

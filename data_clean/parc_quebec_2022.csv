@@ -1,0 +1,153 @@
+saaq_snapshot_year,region_qc,saaq_fuel_code,saaq_fuel_type,number_registered_qc
+2022,Abitibi-Témiscamingue (08),D,Diésel,3887
+2022,Abitibi-Témiscamingue (08),E,Essence,104521
+2022,Abitibi-Témiscamingue (08),H,Hybride,1567
+2022,Abitibi-Témiscamingue (08),L,Électricité,783
+2022,Abitibi-Témiscamingue (08),N,Gaz naturel,11
+2022,Abitibi-Témiscamingue (08),P,Propane,49
+2022,Abitibi-Témiscamingue (08),W,Hybride branchable,1016
+2022,Bas-Saint-Laurent (01),A,Autre,5
+2022,Bas-Saint-Laurent (01),D,Diésel,3388
+2022,Bas-Saint-Laurent (01),E,Essence,141540
+2022,Bas-Saint-Laurent (01),H,Hybride,1850
+2022,Bas-Saint-Laurent (01),L,Électricité,1643
+2022,Bas-Saint-Laurent (01),N,Gaz naturel,25
+2022,Bas-Saint-Laurent (01),P,Propane,29
+2022,Bas-Saint-Laurent (01),W,Hybride branchable,1427
+2022,Capitale-Nationale (03),A,Autre,20
+2022,Capitale-Nationale (03),C,Hydrogène,57
+2022,Capitale-Nationale (03),D,Diésel,6671
+2022,Capitale-Nationale (03),E,Essence,459155
+2022,Capitale-Nationale (03),H,Hybride,9768
+2022,Capitale-Nationale (03),L,Électricité,6921
+2022,Capitale-Nationale (03),N,Gaz naturel,43
+2022,Capitale-Nationale (03),P,Propane,229
+2022,Capitale-Nationale (03),W,Hybride branchable,6928
+2022,Centre-du-Québec (17),A,Autre,6
+2022,Centre-du-Québec (17),D,Diésel,5060
+2022,Centre-du-Québec (17),E,Essence,179020
+2022,Centre-du-Québec (17),H,Hybride,2638
+2022,Centre-du-Québec (17),L,Électricité,3188
+2022,Centre-du-Québec (17),N,Gaz naturel,32
+2022,Centre-du-Québec (17),P,Propane,177
+2022,Centre-du-Québec (17),W,Hybride branchable,2147
+2022,Chaudière-Appalaches (12),A,Autre,16
+2022,Chaudière-Appalaches (12),C,Hydrogène,3
+2022,Chaudière-Appalaches (12),D,Diésel,7191
+2022,Chaudière-Appalaches (12),E,Essence,307940
+2022,Chaudière-Appalaches (12),H,Hybride,4267
+2022,Chaudière-Appalaches (12),L,Électricité,3190
+2022,Chaudière-Appalaches (12),N,Gaz naturel,40
+2022,Chaudière-Appalaches (12),P,Propane,144
+2022,Chaudière-Appalaches (12),S,Non-propulsé,2
+2022,Chaudière-Appalaches (12),W,Hybride branchable,2581
+2022,Côte-Nord (09),A,Autre,2
+2022,Côte-Nord (09),D,Diésel,1291
+2022,Côte-Nord (09),E,Essence,59689
+2022,Côte-Nord (09),H,Hybride,752
+2022,Côte-Nord (09),L,Électricité,343
+2022,Côte-Nord (09),N,Gaz naturel,7
+2022,Côte-Nord (09),P,Propane,8
+2022,Côte-Nord (09),W,Hybride branchable,377
+2022,Estrie (05),A,Autre,10
+2022,Estrie (05),C,Hydrogène,1
+2022,Estrie (05),D,Diésel,8964
+2022,Estrie (05),E,Essence,328635
+2022,Estrie (05),H,Hybride,6480
+2022,Estrie (05),L,Électricité,8440
+2022,Estrie (05),N,Gaz naturel,37
+2022,Estrie (05),P,Propane,223
+2022,Estrie (05),W,Hybride branchable,4971
+2022,Gaspésie–Îles-de-la-Madeleine (11),A,Autre,2
+2022,Gaspésie–Îles-de-la-Madeleine (11),D,Diésel,1661
+2022,Gaspésie–Îles-de-la-Madeleine (11),E,Essence,71403
+2022,Gaspésie–Îles-de-la-Madeleine (11),H,Hybride,596
+2022,Gaspésie–Îles-de-la-Madeleine (11),L,Électricité,373
+2022,Gaspésie–Îles-de-la-Madeleine (11),N,Gaz naturel,7
+2022,Gaspésie–Îles-de-la-Madeleine (11),P,Propane,12
+2022,Gaspésie–Îles-de-la-Madeleine (11),W,Hybride branchable,374
+2022,Lanaudière (14),A,Autre,12
+2022,Lanaudière (14),D,Diésel,8113
+2022,Lanaudière (14),E,Essence,354346
+2022,Lanaudière (14),H,Hybride,5513
+2022,Lanaudière (14),L,Électricité,9424
+2022,Lanaudière (14),N,Gaz naturel,37
+2022,Lanaudière (14),P,Propane,342
+2022,Lanaudière (14),S,Non-propulsé,1
+2022,Lanaudière (14),W,Hybride branchable,5841
+2022,Laurentides (15),A,Autre,11
+2022,Laurentides (15),D,Diésel,9523
+2022,Laurentides (15),E,Essence,432609
+2022,Laurentides (15),H,Hybride,7001
+2022,Laurentides (15),L,Électricité,10451
+2022,Laurentides (15),N,Gaz naturel,27
+2022,Laurentides (15),P,Propane,330
+2022,Laurentides (15),W,Hybride branchable,5576
+2022,Laval (13),A,Autre,8
+2022,Laval (13),D,Diésel,3946
+2022,Laval (13),E,Essence,258716
+2022,Laval (13),H,Hybride,5165
+2022,Laval (13),L,Électricité,6562
+2022,Laval (13),N,Gaz naturel,24
+2022,Laval (13),P,Propane,169
+2022,Laval (13),W,Hybride branchable,3274
+2022,Mauricie (04),A,Autre,8
+2022,Mauricie (04),D,Diésel,3777
+2022,Mauricie (04),E,Essence,182988
+2022,Mauricie (04),H,Hybride,2712
+2022,Mauricie (04),L,Électricité,2795
+2022,Mauricie (04),N,Gaz naturel,29
+2022,Mauricie (04),P,Propane,49
+2022,Mauricie (04),W,Hybride branchable,2253
+2022,Montréal (06),A,Autre,34
+2022,Montréal (06),C,Hydrogène,3
+2022,Montréal (06),D,Diésel,11097
+2022,Montréal (06),E,Essence,852529
+2022,Montréal (06),H,Hybride,20568
+2022,Montréal (06),L,Électricité,17620
+2022,Montréal (06),M,Méthanol,1
+2022,Montréal (06),N,Gaz naturel,76
+2022,Montréal (06),P,Propane,349
+2022,Montréal (06),S,Non-propulsé,1
+2022,Montréal (06),W,Hybride branchable,9618
+2022,Montérégie (16),A,Autre,36
+2022,Montérégie (16),D,Diésel,20745
+2022,Montérégie (16),E,Essence,919647
+2022,Montérégie (16),H,Hybride,18128
+2022,Montérégie (16),L,Électricité,25350
+2022,Montérégie (16),N,Gaz naturel,93
+2022,Montérégie (16),P,Propane,1133
+2022,Montérégie (16),S,Non-propulsé,3
+2022,Montérégie (16),W,Hybride branchable,14831
+2022,Nord-du-Québec (10),A,Autre,1
+2022,Nord-du-Québec (10),D,Diésel,438
+2022,Nord-du-Québec (10),E,Essence,16090
+2022,Nord-du-Québec (10),H,Hybride,172
+2022,Nord-du-Québec (10),L,Électricité,36
+2022,Nord-du-Québec (10),N,Gaz naturel,1
+2022,Nord-du-Québec (10),P,Propane,2
+2022,Nord-du-Québec (10),W,Hybride branchable,64
+2022,Outaouais (07),A,Autre,7
+2022,Outaouais (07),D,Diésel,5015
+2022,Outaouais (07),E,Essence,248889
+2022,Outaouais (07),H,Hybride,4369
+2022,Outaouais (07),L,Électricité,3364
+2022,Outaouais (07),N,Gaz naturel,20
+2022,Outaouais (07),P,Propane,31
+2022,Outaouais (07),W,Hybride branchable,2411
+2022,Saguenay–Lac-Saint-Jean (02),A,Autre,10
+2022,Saguenay–Lac-Saint-Jean (02),D,Diésel,3708
+2022,Saguenay–Lac-Saint-Jean (02),E,Essence,193533
+2022,Saguenay–Lac-Saint-Jean (02),H,Hybride,2811
+2022,Saguenay–Lac-Saint-Jean (02),L,Électricité,1994
+2022,Saguenay–Lac-Saint-Jean (02),N,Gaz naturel,29
+2022,Saguenay–Lac-Saint-Jean (02),P,Propane,111
+2022,Saguenay–Lac-Saint-Jean (02),W,Hybride branchable,1774
+2022,,C,Hydrogène,2
+2022,,D,Diésel,275
+2022,,E,Essence,23881
+2022,,H,Hybride,662
+2022,,L,Électricité,172
+2022,,N,Gaz naturel,1
+2022,,P,Propane,9
+2022,,W,Hybride branchable,121

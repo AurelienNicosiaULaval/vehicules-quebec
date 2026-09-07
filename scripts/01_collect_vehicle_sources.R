@@ -256,3 +256,7 @@ write_csv_guarded(collection_log, log_path, overwrite = FALSE)
 
 cli::cli_alert_success("Journal écrit : {log_path}")
 cli::cli_alert_info("Aucun fichier brut existant n'a été remplacé.")
+
+if (any(collection_log$status == "failed")) {
+  stop("Collecte incomplète : consulter le journal avant de nettoyer.", call. = FALSE)
+}

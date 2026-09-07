@@ -109,6 +109,13 @@ read_ckan_pages <- function(version_dir, expected_resource_id = NULL) {
   }
   pages <- sort(pages)
 
+  if (!identical(basename(pages), as.character(metadata$page_files)) ||
+      !identical(unname(vapply(pages, sha256_file, character(1))),
+                 as.character(metadata$page_sha256))) {
+    stop("Empreinte des pages RNCan différente de la collecte : ", version_dir,
+         call. = FALSE)
+  }
+
   result <- purrr::map_dfr(pages, function(path) {
     object <- jsonlite::fromJSON(path, simplifyDataFrame = TRUE)
     if (!isTRUE(object$success)) {
@@ -133,6 +140,11 @@ read_ckan_pages <- function(version_dir, expected_resource_id = NULL) {
       " lues, ", expected_total, " annoncées dans le manifeste de collecte.",
       call. = FALSE
     )
+  }
+  if (!"_id" %in% names(result) || anyNA(result$`_id`) ||
+      anyDuplicated(result$`_id`)) {
+    stop("Identifiants source RNCan absents ou dupliqués : ", version_dir,
+         call. = FALSE)
   }
   result
 }
@@ -181,6 +193,12 @@ normalise_rncan_resource <- function(raw, source) {
       ". Colonnes observées : ", paste(names(data), collapse = ", "),
       call. = FALSE
     )
+  }
+
+  if (anyNA(classify_vehicle_class(vehicle_class))) {
+    stop("Classe RNCan non documentée : ",
+         paste(unique(vehicle_class[is.na(classify_vehicle_class(vehicle_class))]),
+               collapse = ", "), call. = FALSE)
   }
 
   engine_size_l <- safe_parse_double(pick_column(
@@ -370,6 +388,7 @@ normalise_rncan_resource <- function(raw, source) {
     city_kwh_per_100km = city_kwh,
     highway_kwh_per_100km = highway_kwh,
     combined_kwh_per_100km = combined_kwh,
+    blended_l_per_100km = parse_blended_l_per_100km_annotation(combined_electric_equivalent_raw),
     city_le_per_100km = city_le,
     highway_le_per_100km = highway_le,
     combined_le_per_100km = combined_le,

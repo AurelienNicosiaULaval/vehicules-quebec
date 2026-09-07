@@ -1,0 +1,213 @@
+{
+  "version": "1.0.0",
+  "validated_on": "2026-09-07",
+  "checks": [
+    {
+      "check": "64 configurations, 19 variables",
+      "passed": true
+    },
+    {
+      "check": "Aucune valeur manquante dans le jeu principal",
+      "passed": true
+    },
+    {
+      "check": "Identifiants uniques",
+      "passed": true
+    },
+    {
+      "check": "Un modèle nommé par marque",
+      "passed": true
+    },
+    {
+      "check": "Une seule année modèle : 2025",
+      "passed": true
+    },
+    {
+      "check": "Deux carburants essence documentés",
+      "passed": true
+    },
+    {
+      "check": "Dictionnaire aligné sur les colonnes",
+      "passed": true
+    },
+    {
+      "check": "Empreinte du petit jeu",
+      "passed": true
+    },
+    {
+      "check": "Empreinte du JSON source",
+      "passed": true
+    },
+    {
+      "check": "693 lignes source avec identifiants uniques",
+      "passed": true
+    },
+    {
+      "check": "Provenance dans le même ordre",
+      "passed": true
+    },
+    {
+      "check": "64 lignes retrouvées dans la source",
+      "passed": true
+    },
+    {
+      "check": "Concordance source : make",
+      "passed": true
+    },
+    {
+      "check": "Concordance source : model",
+      "passed": true
+    },
+    {
+      "check": "Concordance source : model_year",
+      "passed": true
+    },
+    {
+      "check": "Concordance source : vehicle_class",
+      "passed": true
+    },
+    {
+      "check": "Concordance source : engine_size_l",
+      "passed": true
+    },
+    {
+      "check": "Concordance source : cylinders",
+      "passed": true
+    },
+    {
+      "check": "Concordance source : transmission",
+      "passed": true
+    },
+    {
+      "check": "Concordance source : city_l_per_100km",
+      "passed": true
+    },
+    {
+      "check": "Concordance source : highway_l_per_100km",
+      "passed": true
+    },
+    {
+      "check": "Concordance source : combined_l_per_100km",
+      "passed": true
+    },
+    {
+      "check": "Concordance source : combined_mpg_imperial",
+      "passed": true
+    },
+    {
+      "check": "Concordance source : co2_g_per_km",
+      "passed": true
+    },
+    {
+      "check": "Concordance source : co2_rating",
+      "passed": true
+    },
+    {
+      "check": "Concordance source : smog_rating",
+      "passed": true
+    },
+    {
+      "check": "Décodage du carburant source",
+      "passed": true
+    },
+    {
+      "check": "Correspondance des classes",
+      "passed": true
+    },
+    {
+      "check": "Conversion en gallon américain",
+      "passed": true
+    },
+    {
+      "check": "Écart ville-route connu et conservé tel que publié",
+      "passed": true
+    },
+    {
+      "check": "Bornes positives et cotes ordinales",
+      "passed": true
+    },
+    {
+      "check": "Empreinte du parc québécois",
+      "passed": true
+    },
+    {
+      "check": "Grain région-carburant unique",
+      "passed": true
+    },
+    {
+      "check": "Comptes entiers positifs en 2022",
+      "passed": true
+    },
+    {
+      "check": "Aucun compte québécois attribué au jeu canadien",
+      "passed": true
+    },
+    {
+      "check": "Bilan de sélection complet",
+      "passed": true
+    },
+    {
+      "check": "Empreintes de tous les fichiers bruts",
+      "passed": true
+    },
+    {
+      "check": "Identifiants SAAQ uniques et complets",
+      "passed": true
+    },
+    {
+      "check": "Année SAAQ brute conforme",
+      "passed": true
+    },
+    {
+      "check": "Chaque compte régional correspond aux véhicules bruts",
+      "passed": true
+    },
+    {
+      "check": "Comptes du périmètre SAAQ conservés",
+      "passed": true
+    },
+    {
+      "check": "30 811 configurations dans les sources figées",
+      "passed": true
+    },
+    {
+      "check": "Configurations complètes sans identifiants dupliqués",
+      "passed": true
+    },
+    {
+      "check": "Aucune jointure Québec prétendue",
+      "passed": true
+    },
+    {
+      "check": "Unités des véhicules électriques séparées",
+      "passed": true
+    },
+    {
+      "check": "Consommation électrique disponible pour les 400 PHEV",
+      "passed": true
+    },
+    {
+      "check": "361 composantes liquides PHEV explicitement publiées",
+      "passed": true
+    },
+    {
+      "check": "Aucune classe non reconnue",
+      "passed": true
+    },
+    {
+      "check": "Aucune anomalie dans les contrôles numériques définis",
+      "passed": true
+    }
+  ],
+  "file_sha256": {
+    "data_clean/vehicules_canada_2025.csv": "170b7d662fe7ccf98ccf54c2a0e127648da36d0cb2d8554c5b7d39cefe238260",
+    "data_clean/vehicules_canada_2025_dictionary.csv": "cff3ea74e974c740d5001ea12baf8a67d53ff80da92c6b6b83d8c72a76f0672d",
+    "data_clean/vehicules_canada_2025_provenance.csv": "cff55da4af08c5150ec61958b96d2e1835c614dff8378b54e7b09ccad3cbbdba",
+    "data_clean/parc_quebec_2022.csv": "4fb91d7190b9c6c62d97c2d23168a1c318206a969bfe3d255bc0d1c42cf30dca",
+    "data_clean/parc_quebec_2022_dictionary.csv": "ee0044296e8b3c37c7a7cfd405e4a19b5d9a832482a3fb842fd11f359ff68a43",
+    "data_source/rncan_2025_snapshot.json": "34031b8d40f89d4719f6e0b3c022567adfe365d6a44d6283316cd0f1b26f1148",
+    "references/rncan_vehicle_classes.csv": "78894d7d514ae1658639a7578d352c1293fc82c96ba1a8430414990d53d50e9a",
+    "references/saaq_fuel_codes.csv": "0ca10a13c43231d8efbe70fa62f8446fd37a6db2587be8a9fdd057366966c7bc"
+  },
+  "saaq_source_sha256": "84f57d77dca8eee189c734c79cde757bf0311ebb5d26694278c31b4db7e331f9"
+}

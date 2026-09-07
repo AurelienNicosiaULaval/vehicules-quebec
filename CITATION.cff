@@ -1,21 +1,19 @@
 cff-version: 1.2.0
-message: "Veuillez citer ce dépôt et les sources administratives originales. Remplacez l’auteur modèle avant une publication officielle."
-title: "vehicules-quebec : jeu pédagogique reproductible sur les véhicules, la consommation et les immatriculations"
+message: "Veuillez citer ce jeu pédagogique ainsi que RNCan et la SAAQ selon DATA_LICENSES.md."
+title: "Véhicules : données canadiennes et parc québécois"
 type: dataset
-version: 0.1.0
-date-released: 2026-06-25
+version: 1.0.0
+date-released: 2026-09-07
 authors:
   - family-names: "Nicosia"
-    given-names: "Aurelien"
-keywords:
-  - véhicules
-  - Québec
-  - consommation de carburant
-  - émissions de CO2
-  - données ouvertes
-  - enseignement de la statistique
+    given-names: "Aurélien"
+repository-code: "https://github.com/AurelienNicosiaULaval/vehicules-quebec"
+url: "https://github.com/AurelienNicosiaULaval/vehicules-quebec/releases/tag/v1.0.0"
 abstract: >-
-  Infrastructure reproductible pour construire un jeu pédagogique inspiré de
-  mtcars à partir de données ouvertes de la SAAQ et de Ressources naturelles
-  Canada. Les dénombrements québécois ne sont attribués à une configuration de
-  véhicule que lorsque la jointure est vérifiée et non ambiguë.
+  Jeu pédagogique de configurations automobiles de l’année modèle 2025,
+  sélectionnées dans les cotes de Ressources naturelles Canada, et portrait
+  distinct des automobiles et camions légers du Québec dans le périmètre
+  défini à partir des données SAAQ de 2022. Le dépôt fournit les données,
+  leur provenance, les dictionnaires, une activité exploratoire en R et une
+  procédure de validation reproductible. Les dénombrements québécois ne
+  sont pas attribués aux configurations canadiennes sans correspondance vérifiée.

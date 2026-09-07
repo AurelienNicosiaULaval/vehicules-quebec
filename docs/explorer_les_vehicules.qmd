@@ -1,0 +1,286 @@
+---
+title: "Explorer 64 véhicules de l’année modèle 2025"
+subtitle: "Consommation, cylindrée et comparaisons entre classes"
+lang: fr
+format:
+  html:
+    toc: true
+    embed-resources: true
+execute:
+  warning: false
+  message: false
+---
+
+Cette activité utilise des configurations publiées par Ressources naturelles
+Canada (RNCan). Une ligne représente une configuration offerte sur le marché
+canadien, pas un véhicule immatriculé ni une vente. Le petit jeu contient
+64 configurations à essence, éventuellement hybrides non rechargeables,
+sélectionnées pour l’enseignement. Leur présence au Québec n’est pas confirmée.
+
+Objectifs : décrire une distribution, comparer des groupes, explorer une
+association et reconnaître les limites d’une conclusion. Prérequis : créer un
+objet R et exécuter du code dans RStudio. Durée indicative : 60 à 90 minutes,
+avec un prolongement facultatif sur la régression. Cette durée est une proposition;
+l’activité est exécutée techniquement, mais n’a pas été testée en classe.
+
+## 1. Ouvrir les données
+
+Télécharger la [trousse pédagogique v1.0.0](https://github.com/AurelienNicosiaULaval/vehicules-quebec/releases/download/v1.0.0/vehicules-quebec-v1.0.0.zip),
+la décompresser, puis ouvrir `vehicules-quebec.Rproj` dans RStudio.
+
+Installer une seule fois les paquets suivants dans la console :
+
+```{r}
+#| eval: false
+install.packages(c("readr", "dplyr", "ggplot2", "knitr"))
+```
+
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+
+vehicules <- read_csv("data_clean/vehicules_canada_2025.csv",
+  col_types = cols(.default = col_guess(), vehicle_id = col_character()))
+dim(vehicules)
+sum(is.na(vehicules))
+```
+
+Les 19 colonnes sont décrites dans
+[`vehicules_canada_2025_dictionary.csv`](../data_clean/vehicules_canada_2025_dictionary.csv).
+Le jeu de départ est complet. Cela résulte des critères de sélection et ne
+signifie pas que les données automobiles sont toujours complètes.
+
+Toutes les lignes ont la même année modèle. On ne peut donc pas étudier ici
+l’évolution historique de la consommation. Les carburants électriques et les
+hybrides rechargeables sont disponibles dans la table de diversité séparée;
+leurs unités et modes d’essai demandent d’autres précautions.
+
+## 2. Décrire les groupes
+
+```{r}
+class_labels <- c(passenger_car = "Automobiles", pickup = "Camionnettes",
+                  suv = "VUS", van = "Fourgonnettes", wagon = "Familiales")
+vehicules <- vehicules |>
+  mutate(classe = factor(vehicle_class_group, levels = names(class_labels),
+                         labels = unname(class_labels)))
+portrait <- vehicules |>
+  group_by(classe) |>
+  summarise(n = n(), moyenne = mean(combined_l_per_100km),
+            mediane = median(combined_l_per_100km),
+            ecart_type = sd(combined_l_per_100km),
+            minimum = min(combined_l_per_100km),
+            maximum = max(combined_l_per_100km), .groups = "drop")
+kable(portrait, digits = 2,
+      col.names = c("Classe", "Effectif", "Moyenne", "Médiane", "Écart-type", "Minimum", "Maximum"))
+```
+
+Les consommations sont en litres par 100 kilomètres. Une valeur plus faible
+correspond à moins de carburant pour la même distance. Les proportions de
+classes dans ce tableau ne sont pas des parts du parc automobile canadien
+ou québécois : la sélection vise à varier les classes et les transmissions.
+
+## 3. Comparer les distributions
+
+```{r}
+#| fig-width: 8
+#| fig-height: 5
+#| fig-alt: "Consommations combinées des 64 configurations, représentées par points et boîtes à moustaches dans cinq classes de véhicules."
+palette_classes <- c("#0072B2", "#D55E00", "#009E73", "#CC79A7", "#E69F00")
+ggplot(vehicules, aes(classe, combined_l_per_100km, fill = classe)) +
+  geom_boxplot(width = 0.5, outlier.shape = NA, alpha = 0.55) +
+  geom_point(position = position_jitter(width = 0.12, height = 0, seed = 20260907),
+             size = 1.8, alpha = 0.75) +
+  scale_fill_manual(values = palette_classes) +
+  labs(x = NULL, y = "Consommation combinée (L/100 km)") +
+  theme_minimal(base_size = 12) + theme(legend.position = "none") + coord_flip()
+```
+
+Comparer les centres et les dispersions. Les points restent visibles, car une
+boîte résume peu d’observations dans certaines classes. Un point au-delà d’une
+moustache ne prouve pas une erreur de mesure et ne doit pas être supprimé
+automatiquement.
+
+## 4. Explorer une association
+
+```{r}
+#| fig-width: 8
+#| fig-height: 5.5
+#| fig-alt: "Nuage de la cylindrée et de la consommation combinée des 64 configurations; la couleur indique leur classe."
+ggplot(vehicules, aes(engine_size_l, combined_l_per_100km, colour = classe)) +
+  geom_point(size = 2.4, alpha = 0.85) +
+  scale_colour_manual(values = palette_classes) +
+  labs(x = "Cylindrée (L)", y = "Consommation combinée (L/100 km)", colour = "Classe") +
+  theme_minimal(base_size = 12) + theme(legend.position = "bottom") +
+  guides(colour = guide_legend(nrow = 2))
+
+correlation_globale <- cor(vehicules$engine_size_l, vehicules$combined_l_per_100km)
+correlations <- vehicules |>
+  group_by(classe) |>
+  summarise(n = n(), correlation = cor(engine_size_l, combined_l_per_100km),
+            .groups = "drop")
+kable(correlations, digits = 3)
+```
+
+La corrélation globale est `r round(correlation_globale, 3)`. Les corrélations
+par classe décrivent des sous-ensembles plus petits. Une association globale
+ne signifie pas que toutes les classes ont la même relation, ni qu’une hausse
+de cylindrée causerait à elle seule le changement observé de consommation.
+
+## 5. Vérifier les unités et les informations redondantes
+
+```{r}
+vehicules |>
+  select(make, model, combined_l_per_100km, combined_mpg_imperial, combined_mpg_us) |>
+  slice_head(n = 6) |>
+  kable(digits = 2, col.names = c("Marque", "Modèle", "L/100 km", "mi/gal (imp.)", "mi/gal (É.-U.)"))
+```
+
+`mtcars$mpg` utilise le gallon américain. Le fichier RNCan utilisé publie des
+milles au gallon impérial. La colonne `combined_mpg_us` est une conversion du
+débit combiné, pas une seconde observation indépendante. Les consommations
+urbaine, routière et combinée sont également liées par construction; les
+émissions de CO2 sont fortement liées au carburant et à sa consommation.
+
+Si l’on cherche à prédire la consommation à partir des caractéristiques du
+véhicule, utiliser sa conversion en mpg comme prédicteur donnerait une réponse
+déjà contenue dans la cible. Le même problème doit être discuté pour les
+autres cotes et émissions, selon l’information disponible au moment de prédire.
+
+Un écart mineur est signalé pour le Ford Maverick Hybrid : sa cote combinée
+publiée (6,2) diffère de 0,105 L/100 km de la combinaison 55/45 des cotes
+affichées. Les valeurs sont conservées; le rapport de validation documente
+ce point sans lui attribuer une cause non établie.
+
+## 6. À vous de jouer
+
+1. Quelle classe a la médiane la plus élevée dans ce petit jeu? Donner sa valeur et l’unité.
+2. Dans chaque classe, calculer l’écart interquartile avec `IQR()` et identifier la dispersion la plus forte selon cet indicateur.
+3. Ajouter `facet_wrap(~ classe)` au nuage de points. Expliquer une différence entre la vue globale et les vues par classe.
+4. Vérifier que le produit `combined_mpg_us * combined_l_per_100km` est presque constant. Expliquer pourquoi les écarts restants sont minuscules.
+5. Peut-on conclure que les véhicules à boîte manuelle consomment moins à cause de leur transmission? Justifier en distinguant comparaison descriptive et causalité.
+6. Un étudiant affirme que les 16 VUS du fichier représentent 25 % des véhicules au Québec. Identifier les deux erreurs concernant l’échantillonnage et la portée géographique.
+
+Point d’arrêt : remettre le tableau, les deux graphiques et six réponses
+courtes avec leurs unités. Les sections suivantes sont facultatives.
+
+## 7. Prolongement : une régression et sa validation
+
+On ajuste un modèle descriptif à un seul prédicteur. La réponse est une cote
+d’essai et non une consommation observée pendant les déplacements d’un ménage.
+
+```{r}
+modele <- lm(combined_l_per_100km ~ engine_size_l, data = vehicules)
+kable(data.frame(terme = names(coef(modele)), estimation = unname(coef(modele))), digits = 3)
+```
+
+La pente décrit un écart ajusté de consommation associé à un litre supplémentaire
+de cylindrée dans cet échantillon. L’ordonnée à l’origine correspond à une
+cylindrée nulle, hors du domaine observé; elle n’a pas ici d’interprétation physique.
+
+```{r}
+#| fig-width: 8
+#| fig-height: 4.5
+#| fig-alt: "Résidus du modèle linéaire de consommation en fonction des valeurs ajustées, avec une ligne horizontale au résidu nul."
+diagnostic <- data.frame(ajustement = fitted(modele), residu = residuals(modele))
+ggplot(diagnostic, aes(ajustement, residu)) +
+  geom_hline(yintercept = 0, linetype = 2, colour = "grey45") +
+  geom_point(colour = "#0072B2", size = 2) +
+  labs(x = "Consommation ajustée (L/100 km)", y = "Résidu (L/100 km)") +
+  theme_minimal(base_size = 12)
+```
+
+La validation suivante retire successivement une configuration, ajuste le modèle
+sur les 63 autres et prédit la configuration retirée. Elle compare le modèle à
+une prédiction constante égale à la moyenne des 63 configurations d’apprentissage.
+
+```{r}
+loo <- lapply(seq_len(nrow(vehicules)), function(i) {
+  apprentissage <- vehicules[-i, ]
+  validation <- vehicules[i, ]
+  ajustement <- lm(combined_l_per_100km ~ engine_size_l, data = apprentissage)
+  tibble(observe = validation$combined_l_per_100km,
+         prediction_lineaire = unname(predict(ajustement, newdata = validation)),
+         prediction_moyenne = mean(apprentissage$combined_l_per_100km))
+}) |> bind_rows()
+validation_modele <- tibble(
+  modele = c("Cylindrée seule", "Moyenne d’apprentissage"),
+  rmse_loo = c(sqrt(mean((loo$observe - loo$prediction_lineaire)^2)),
+               sqrt(mean((loo$observe - loo$prediction_moyenne)^2))))
+kable(validation_modele, digits = 3, col.names = c("Modèle", "RMSE (L/100 km)"))
+```
+
+Cette erreur mesure une évaluation interne au petit jeu sélectionné. Des modèles
+de la même marque peuvent partager des caractéristiques. Une étude de généralisation
+à de nouvelles marques ou de nouvelles années demanderait une séparation adaptée
+à cet objectif et davantage de données. Aucun résultat présenté ici n’est une
+estimation de performance sur le parc québécois.
+
+## 8. Volet Québec : compter dans le bon tableau
+
+Les dénombrements réels de la SAAQ sont fournis dans un autre fichier. Il concerne
+les automobiles et camions légers de type `AU` et de classes `PAU`, `CAU` ou `RAU`,
+autorisés à circuler au 31 décembre 2022. Les autres usages sont hors de ce périmètre.
+
+```{r}
+parc <- read_csv("data_clean/parc_quebec_2022.csv",
+  col_types = cols(.default = col_guess(), region_qc = col_character(),
+                   saaq_fuel_code = col_character()))
+parc |>
+  group_by(saaq_fuel_type) |>
+  summarise(vehicules = sum(number_registered_qc), .groups = "drop") |>
+  arrange(desc(vehicules)) |>
+  kable(col.names = c("Carburant déclaré", "Véhicules"),
+        format.args = list(big.mark = " ", scientific = FALSE))
+```
+
+Une ligne de cette table est un groupe région-carburant. Il faut additionner
+`number_registered_qc`, pas compter ses lignes. Les modalités inhabituelles
+restent celles du fichier administratif; elles ne sont pas réinterprétées.
+On ne peut pas attribuer ces effectifs aux configurations RNCan de 2025.
+
+## Corrigé commenté
+
+```{r}
+classe_mediane <- portrait |> filter(mediane == max(mediane))
+dispersion <- vehicules |> group_by(classe) |>
+  summarise(ecart_interquartile = IQR(combined_l_per_100km), .groups = "drop") |>
+  arrange(desc(ecart_interquartile))
+```
+
+1. La médiane la plus élevée est celle de la classe
+   `r paste(classe_mediane$classe, collapse = ", ")`, à
+   `r paste(classe_mediane$mediane, collapse = ", ")` L/100 km.
+2. Les écarts interquartiles sont calculés ci-dessous. Ils décrivent la moitié
+   centrale des observations; ils peuvent conduire à un classement différent
+   de celui des écarts-types.
+
+```{r}
+kable(dispersion, digits = 2)
+```
+
+3. Le facettage conserve le nuage propre à chaque classe. Comparer sa dispersion
+   et son étendue en cylindrée avant d’interpréter les corrélations. Une réponse
+   acceptable cite un élément visible et le groupe concerné.
+4. Le produit est voisin de 235,214583. La colonne américaine est calculée à
+   partir de la consommation, puis arrondie à quatre décimales.
+5. Non : les modèles n’ont pas été affectés aléatoirement à leur transmission.
+   La classe, la motorisation et d’autres caractéristiques peuvent différer.
+   `AM` signifie manuelle automatisée et ne doit pas être confondu avec `M`.
+6. Le petit jeu est sélectionné pour sa diversité, sans pondération du parc.
+   De plus, ses lignes sont des configurations canadiennes dont la présence
+   au Québec n’est pas confirmée. Une proportion calculée dans ce fichier
+   ne devient donc pas une proportion québécoise.
+
+## Sources
+
+- RNCan (2026), [Cotes de consommation de carburant](https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64), ressource 2025 recueillie le 2 juillet 2026.
+- RNCan (consulté le 7 septembre 2026), [Explication des tableaux](https://ressources-naturelles.canada.ca/efficacite-energetique/efficacite-energetique-transports/vehicules-personnels/explication-tableaux).
+- SAAQ (2023), [Documentation des véhicules en circulation](https://www.donneesquebec.ca/recherche/dataset/4aea7984-10ec-4d4f-80e4-5bb9a0006996/resource/00ea3ac1-da3c-4ece-aa8c-a2e88529447b/download/vehicules-circulation-documentation.pdf), portrait 2022.
+- R Core Team, [Documentation de mtcars](https://stat.ethz.ch/R-manual/R-patched/library/datasets/html/mtcars.html).
+- NIST, [Facteurs de conversion du SI](https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9).
+
+Le [script R complet](../examples/01_explorer_les_vehicules.R) reproduit les tableaux,
+les trois graphiques et la validation croisée. Les licences et attributions
+sont réunies dans [`DATA_LICENSES.md`](../DATA_LICENSES.md).

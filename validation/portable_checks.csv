@@ -1,0 +1,39 @@
+check,passed
+"64 configurations, 19 variables",TRUE
+Aucune valeur manquante dans le jeu principal,TRUE
+Identifiants uniques,TRUE
+Un modèle nommé par marque,TRUE
+Une seule année modèle : 2025,TRUE
+Deux carburants essence documentés,TRUE
+Dictionnaire aligné sur les colonnes,TRUE
+Empreinte du petit jeu,TRUE
+Empreinte du JSON source,TRUE
+693 lignes source avec identifiants uniques,TRUE
+Provenance dans le même ordre,TRUE
+64 lignes retrouvées dans la source,TRUE
+Concordance source : make,TRUE
+Concordance source : model,TRUE
+Concordance source : model_year,TRUE
+Concordance source : vehicle_class,TRUE
+Concordance source : engine_size_l,TRUE
+Concordance source : cylinders,TRUE
+Concordance source : transmission,TRUE
+Concordance source : city_l_per_100km,TRUE
+Concordance source : highway_l_per_100km,TRUE
+Concordance source : combined_l_per_100km,TRUE
+Concordance source : combined_mpg_imperial,TRUE
+Concordance source : co2_g_per_km,TRUE
+Concordance source : co2_rating,TRUE
+Concordance source : smog_rating,TRUE
+Décodage du carburant source,TRUE
+Correspondance des classes,TRUE
+Conversion en gallon américain,TRUE
+Écart ville-route connu et conservé tel que publié,TRUE
+Bornes positives et cotes ordinales,TRUE
+Empreinte du parc québécois,TRUE
+Grain région-carburant unique,TRUE
+Comptes entiers positifs en 2022,TRUE
+Aucun compte québécois attribué au jeu canadien,TRUE
+Bilan de sélection complet,TRUE
+Certificat des contrôles complets réussi,TRUE
+Fichiers identiques à ceux de la validation complète,TRUE

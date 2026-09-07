@@ -1,0 +1,65 @@
+vehicle_id,make,model,model_year,vehicle_class,vehicle_class_group,engine_size_l,cylinders,transmission,transmission_type,fuel_type,city_l_per_100km,highway_l_per_100km,combined_l_per_100km,combined_mpg_imperial,combined_mpg_us,co2_g_per_km,co2_rating,smog_rating
+vq_5b283a13698fd1fb0e981514,Acura,ADX AWD,2025,Station wagon: Small,wagon,1.5,4,AV7,continuously_variable,premium_gasoline,9.1,7.7,8.5,33,27.6723,199,6,5
+vq_ccc8a5085daff467c3c4455b,Acura,Integra Type S,2025,Full-size,passenger_car,2,4,M6,manual,premium_gasoline,11.1,8.3,9.9,29,23.759,230,5,5
+vq_c057d0dc6ccedca31fa925cf,Alfa Romeo,Stelvio AWD,2025,Sport utility vehicle: Small,suv,2,4,A8,automatic,premium_gasoline,10.8,8.3,9.6,29,24.5015,226,5,4
+vq_3f010771147b96bfc3079c5a,Audi,A4 allroad 45 TFSI quattro,2025,Station wagon: Small,wagon,2,4,AM7,automated_manual,premium_gasoline,10.3,7.8,9.2,31,25.5668,215,5,4
+vq_1e0cbeebfa8edcc1f44ba717,Audi,RS 6 Avant GT,2025,Station wagon: Mid-size,wagon,4,8,AS8,automatic_select_shift,premium_gasoline,17,11,14.3,20,16.4486,336,3,2
+vq_85b31f7369eff2ad5b80afbc,Audi,RS 6 Avant quattro performance,2025,Station wagon: Mid-size,wagon,4,8,AS8,automatic_select_shift,premium_gasoline,17,11,14.3,20,16.4486,336,3,2
+vq_9d7752672cf078adc7d20cfd,BMW,530i xDrive Sedan,2025,Mid-size,passenger_car,2,4,AS8,automatic_select_shift,premium_gasoline,8.7,6.8,7.9,36,29.774,182,6,6
+vq_35c5a012dea50a4d9ab0946a,BMW,X7 xDrive40i,2025,Sport utility vehicle: Standard,suv,3,6,AS8,automatic_select_shift,premium_gasoline,11.6,9.6,10.7,26,21.9827,247,5,6
+vq_ceea869c07e20308695b6701,Chevrolet,Colorado 4WD,2025,Pickup truck: Standard,pickup,2.7,4,A8,automatic,regular_gasoline,13.6,11,12.4,23,18.9689,303,4,6
+vq_c7f24d28186b3737ff4fd2d8,Chevrolet,Silverado,2025,Pickup truck: Standard,pickup,2.7,4,A8,automatic,regular_gasoline,13.4,11.2,12.5,23,18.8172,292,4,6
+vq_bdb4c2d376063554eeb36fb9,Chevrolet,Silverado 4WD,2025,Pickup truck: Standard,pickup,2.7,4,A8,automatic,regular_gasoline,13.7,12,12.9,22,18.2337,303,4,6
+vq_b256fa4328d2b036f44be95f,Chevrolet,Tahoe 4WD,2025,Sport utility vehicle: Standard,suv,5.3,8,A10,automatic,regular_gasoline,15.9,12.5,14.4,20,16.3343,337,3,6
+vq_6c3bca11cd29478af812eefa,Chevrolet,Trailblazer,2025,Sport utility vehicle: Small,suv,1.2,3,AV,continuously_variable,regular_gasoline,7.8,7.7,7.8,36,30.1557,183,6,6
+vq_2dfafc986316b285ff8774a8,Chevrolet,Trax,2025,Station wagon: Small,wagon,1.2,3,A6,automatic,regular_gasoline,8.5,7.6,8.1,35,29.0388,190,6,6
+vq_c14191efdd623fb9b852f27f,Chrysler,Grand Caravan,2025,Minivan,van,3.6,6,A9,automatic,regular_gasoline,12.4,8.4,10.6,27,22.1901,249,5,6
+vq_6425442f007ed66f8c59beb6,Chrysler,Pacifica,2025,Minivan,van,3.6,6,A9,automatic,regular_gasoline,12.4,8.4,10.6,27,22.1901,249,5,6
+vq_b8b71b9c7428f024b840a9d2,Chrysler,Pacifica AWD,2025,Minivan,van,3.6,6,A9,automatic,regular_gasoline,14.1,9.4,12,24,19.6012,279,4,6
+vq_54b65c10bd232420d644f7da,Ford,Bronco 4WD,2025,Sport utility vehicle: Small,suv,2.3,4,M7,manual,regular_gasoline,12.9,11,12.1,23,19.4392,291,4,6
+vq_4c5ce00f5cc88798a2bbba45,Ford,Bronco Badlands 4WD,2025,Sport utility vehicle: Small,suv,2.3,4,M7,manual,regular_gasoline,13.9,12.9,13.5,21,17.4233,326,3,6
+vq_a5bf1b68717954580b4f7375,Ford,Maverick Hybrid,2025,Pickup truck: Small,pickup,2.5,4,AV,continuously_variable,regular_gasoline,5.6,6.7,6.2,46,37.9378,145,7,7
+vq_f6a988c1de583b2d94f19ba8,Ford,Maverick Hybrid AWD,2025,Pickup truck: Small,pickup,2.5,4,AV,continuously_variable,regular_gasoline,5.8,6.9,6.3,45,37.3356,148,7,7
+vq_5a8e700ff97cedbe41bffaf8,GMC,Terrain AWD,2025,Sport utility vehicle: Small,suv,1.5,4,A8,automatic,regular_gasoline,10,8.4,9.3,30,25.2919,219,5,6
+vq_2c5bff58d39346816cecd9dc,Genesis,G70 AWD,2025,Compact,passenger_car,3.3,6,AS8,automatic_select_shift,premium_gasoline,14.3,10.7,12.7,22,18.5208,298,4,4
+vq_1282292d4713e82ef0a574fa,Honda,HR-V,2025,Station wagon: Small,wagon,2,4,AV,continuously_variable,regular_gasoline,9.1,7.4,8.3,34,28.3391,194,6,6
+vq_18f452bf0b5da4131027f417,Honda,Odyssey,2025,Minivan,van,3.5,6,AS10,automatic_select_shift,regular_gasoline,12.2,8.5,10.6,27,22.1901,248,5,4
+vq_e5a3dcd5bf8de1e1d0b7fa8f,Honda,Pilot AWD,2025,Sport utility vehicle: Standard,suv,3.5,6,AS10,automatic_select_shift,regular_gasoline,12.4,9.3,11,26,21.3831,258,4,6
+vq_19ea7fdafe86aae37b22098a,Honda,Ridgeline AWD,2025,Pickup truck: Standard,pickup,3.5,6,AS9,automatic_select_shift,regular_gasoline,12.8,9.9,11.5,25,20.4534,271,4,4
+vq_abc3ca5034a023e325fdd7ea,Hyundai,Elantra,2025,Mid-size,passenger_car,2,4,AV1,continuously_variable,regular_gasoline,7.7,5.9,6.9,41,34.0891,160,7,6
+vq_62131cefa0e8674bbbd16638,Kia,Carnival,2025,Minivan,van,3.5,6,AS8,automatic_select_shift,regular_gasoline,12.9,8.8,11.1,25,21.1905,260,4,5
+vq_d6186fa069465e67b2608709,Kia,Carnival Hybrid,2025,Minivan,van,1.6,4,AM6,automated_manual,regular_gasoline,6.9,7.6,7.2,39,32.6687,170,6,6
+vq_0d79821ccf725504c0a9287f,Kia,Niro FE,2025,Sport utility vehicle: Small,suv,1.6,4,AM6,automated_manual,regular_gasoline,4.5,4.4,4.4,64,53.4579,104,8,6
+vq_4e0daab1291c86a2345198dc,Kia,Seltos,2025,Sport utility vehicle: Small,suv,2,4,AV8,continuously_variable,regular_gasoline,8.3,6.8,7.6,37,30.9493,179,6,6
+vq_7ac84c63f312c10630a00822,Lexus,ES 250 AWD,2025,Mid-size,passenger_car,2.5,4,AS8,automatic_select_shift,regular_gasoline,9.6,7,8.4,34,28.0017,198,6,5
+vq_d8408651395ccc884ee41ce7,MINI,John Cooper Works Countryman ALL4,2025,Sport utility vehicle: Small,suv,2,4,AM7,automated_manual,premium_gasoline,10.2,7.9,9.2,31,25.5668,212,5,5
+vq_c4f340425ccef39a58efb041,Mazda,MX-5 (SIL),2025,Two-seater,passenger_car,2,4,M6,manual,premium_gasoline,9,7,8.1,35,29.0388,189,6,2
+vq_7a9a1974f437316b8edf2f21,Mercedes-Benz,AMG GLA 35 4MATIC Coupe,2025,Station wagon: Small,wagon,2,4,AM8,automated_manual,premium_gasoline,10.9,8.4,9.8,29,24.0015,230,5,5
+vq_ee3e8a708fcc3a6ee98ece3b,Mercedes-Benz,AMG GLB 35 4MATIC Coupe,2025,Station wagon: Small,wagon,2,4,AM8,automated_manual,premium_gasoline,11.5,8.9,10.3,27,22.8364,242,5,5
+vq_648e5b981296c302dd9349b4,Mercedes-Benz,AMG GLC 43 4MATIC Coupe,2025,Station wagon: Small,wagon,2,4,A9,automatic,premium_gasoline,12.7,9.8,11.4,25,20.6329,269,4,4
+vq_51f520ab9833ccec01dc09b3,Mercedes-Benz,AMG GLC 43 4MATIC+ SUV,2025,Station wagon: Small,wagon,2,4,A9,automatic,premium_gasoline,12.6,9.4,11.2,25,21.0013,263,4,4
+vq_d4add4957aa8c2cbd1d773de,Mercedes-Benz,AMG SL 43 4MATIC Roadster,2025,Minicompact,passenger_car,2,4,A9,automatic,premium_gasoline,12.2,8.8,10.7,26,21.9827,249,5,4
+vq_e157beb2caac214f93426c48,Mercedes-Benz,C 300 4MATIC Sedan,2025,Compact,passenger_car,2,4,A9,automatic,premium_gasoline,10,7.1,8.7,32,27.0362,204,5,7
+vq_76fe99212f6730d26cd6a243,Mercedes-Benz,CLE 300 4MATIC Coupe,2025,Subcompact,passenger_car,2,4,A9,automatic,premium_gasoline,9.8,7.1,8.6,33,27.3505,201,6,7
+vq_8e1960ab6fb37be465668bbc,Mercedes-Benz,GLS 580 4MATIC SUV,2025,Sport utility vehicle: Standard,suv,4,8,A9,automatic,premium_gasoline,16.6,12.1,14.6,19,16.1106,340,3,4
+vq_de95885293dd4c118cdf3166,Mercedes-Benz,S 500 4MATIC Sedan,2025,Full-size,passenger_car,3,6,A9,automatic,premium_gasoline,11.2,7.7,9.6,29,24.5015,226,5,6
+vq_86826e0f23d597fe7df62ef2,Nissan,Frontier 4WD PRO-4X,2025,Pickup truck: Standard,pickup,3.8,6,AS9,automatic_select_shift,regular_gasoline,14.3,11.5,13,22,18.0934,306,4,5
+vq_f84dc4782ea63d815ba02f25,Nissan,Sentra SR,2025,Mid-size,passenger_car,2,4,AV,continuously_variable,regular_gasoline,7.4,6.1,6.9,41,34.0891,161,7,6
+vq_69e8e73423b793e7e0990baf,Porsche,718 Boxster S,2025,Two-seater,passenger_car,2.5,4,AM7,automated_manual,premium_gasoline,12.2,9.2,10.9,26,21.5793,255,5,1
+vq_5a9198a0f9181594158578ad,Porsche,718 Cayman,2025,Two-seater,passenger_car,2,4,M6,manual,premium_gasoline,12,9.5,10.9,26,21.5793,254,5,1
+vq_a708a06f8c25a30ef6569cad,Porsche,718 Cayman GTS,2025,Two-seater,passenger_car,4,6,AM7,automated_manual,premium_gasoline,12.3,9.8,11.1,25,21.1905,260,4,4
+vq_0c7ede5d86b1662d65258a8f,Porsche,718 Cayman S,2025,Two-seater,passenger_car,2.5,4,M6,manual,premium_gasoline,12.5,9.6,11.2,25,21.0013,263,4,1
+vq_de1247c511055e97475b2a99,Porsche,911 GT3,2025,Two-seater,passenger_car,4,6,AM7,automated_manual,premium_gasoline,16.5,13.4,15.1,19,15.5771,355,3,5
+vq_3af81a9ea991d853eb45a17d,Porsche,Cayenne Turbo GT Coupe,2025,Sport utility vehicle: Standard,suv,4,8,AS8,automatic_select_shift,premium_gasoline,15.5,11.8,13.8,20,17.0445,324,3,2
+vq_7a38821cbd0c5452ccb19e0e,Porsche,Macan T,2025,Sport utility vehicle: Small,suv,2,4,AM7,automated_manual,premium_gasoline,12.2,9.6,11,26,21.3831,259,4,4
+vq_dce656cc16b52d9bd788d04f,Subaru,Impreza AWD,2025,Station wagon: Small,wagon,2.5,4,AV8,continuously_variable,regular_gasoline,9,7.2,8.2,34,28.6847,191,6,6
+vq_e030ba8f35cba84377a3400b,Subaru,Outback Wilderness AWD,2025,Sport utility vehicle: Small,suv,2.4,4,AV8,continuously_variable,regular_gasoline,11,9,10.1,28,23.2886,235,5,5
+vq_7ad8c381e7e15140ec0c6bf9,Toyota,Corolla (3-mode),2025,Compact,passenger_car,2,4,AV10,continuously_variable,regular_gasoline,7.6,5.9,6.8,42,34.5904,160,7,6
+vq_7de1f8d75515f5f6351dac83,Toyota,Crown AWD,2025,Mid-size,passenger_car,2.4,4,AS6,automatic_select_shift,regular_gasoline,8.1,7.3,7.8,36,30.1557,182,6,6
+vq_5fe259e2a13ebc469a8e7b90,Toyota,Highlander AWD,2025,Sport utility vehicle: Small,suv,2.4,4,AS8,automatic_select_shift,regular_gasoline,11,8.4,9.9,29,23.759,231,5,6
+vq_d7b7d2466a8e6859a425d514,Toyota,Sienna,2025,Minivan,van,2.5,4,AV,continuously_variable,regular_gasoline,6.6,6.5,6.6,43,35.6386,153,7,6
+vq_04eba74e2eb669c236d1c815,Toyota,Sienna AWD,2025,Minivan,van,2.5,4,AV,continuously_variable,regular_gasoline,6.8,6.7,6.8,42,34.5904,158,7,6
+vq_177d61b87fd431407d6a290a,Toyota,Tacoma 4WD,2025,Pickup truck: Small,pickup,2.4,4,M6,manual,regular_gasoline,13.2,10.3,11.9,24,19.7659,279,4,4
+vq_70c831f1ff6d1bb77a12b15d,Toyota,Tundra 4WD (3-mode)/TRD,2025,Pickup truck: Standard,pickup,3.4,6,AS10,automatic_select_shift,regular_gasoline,13.5,10.6,12.2,23,19.2799,286,4,4
+vq_c6984532a08b28bcb894e122,Volkswagen,Golf R,2025,Compact,passenger_car,2,4,AM7,automated_manual,premium_gasoline,10.5,7.7,9.3,30,25.2919,217,5,4
+vq_05635c454f2f01081999f4aa,Volvo,V90 CC B6 AWD,2025,Station wagon: Mid-size,wagon,2,4,AS8,automatic_select_shift,premium_gasoline,10.7,8.1,9.5,30,24.7594,223,5,6

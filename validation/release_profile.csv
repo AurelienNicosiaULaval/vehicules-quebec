@@ -1,0 +1,11 @@
+metric,value
+rncan_rows,30811
+rncan_makes,64
+rncan_min_year,1995
+rncan_max_year,2026
+qc_confirmed_configurations,0
+saaq_raw_rows,7058605
+saaq_scope_rows,5507330
+saaq_scope_missing_region,25123
+core_rows,64
+core_columns,19

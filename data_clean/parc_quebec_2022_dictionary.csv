@@ -1,0 +1,6 @@
+variable,type,description
+saaq_snapshot_year,integer,"Année du portrait au 31 décembre, constante à 2022."
+region_qc,character,"Libellé et code de région administrative tels que publiés, lus comme texte. Une région manquante reste manquante."
+saaq_fuel_code,character,Code SAAQ original du carburant; consulter references/saaq_fuel_codes.csv.
+saaq_fuel_type,character,Libellé du code de carburant issu de la documentation SAAQ; code manquant indiqué Non précisé.
+number_registered_qc,integer,"Nombre de véhicules autorisés à circuler : type AU et classes PAU, CAU ou RAU. Ne couvre pas tous les usages de véhicules légers."

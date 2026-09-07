@@ -1,0 +1,33 @@
+source_label,vehicle_class_group,vehicle_size_group
+Compact,passenger_car,compact
+Compacte,passenger_car,compact
+Subcompact,passenger_car,subcompact
+Sous-compacte,passenger_car,subcompact
+Minicompact,passenger_car,minicompact
+Minicompacte,passenger_car,minicompact
+Mid-size,passenger_car,mid_size
+Intermédiaire,passenger_car,mid_size
+Full-size,passenger_car,full_size
+Grande berline,passenger_car,full_size
+Two-seater,passenger_car,two_seater
+Deux places,passenger_car,two_seater
+Station wagon: Small,wagon,small
+Familiale : petite,wagon,small
+Station wagon: Mid-size,wagon,mid_size
+Familiale : intermédiaire,wagon,mid_size
+Pickup truck: Small,pickup,small
+Camionnette : petite,pickup,small
+Pickup truck: Standard,pickup,standard
+Camionnette : ordinaire,pickup,standard
+Sport utility vehicle: Small,suv,small
+Véhicule utilitaire sport : petit,suv,small
+Sport utility vehicle: Standard,suv,standard
+Véhicule utilitaire sport : ordinaire,suv,standard
+Véhicule utilitaire sport,suv,
+Minivan,van,
+Fourgonnette,van,
+Van: Passenger,van,
+Fourgon : passager,van,
+Fourgon : cargaison,van,
+Special purpose vehicle,special_purpose,
+Véhicule à usage spécial,special_purpose,

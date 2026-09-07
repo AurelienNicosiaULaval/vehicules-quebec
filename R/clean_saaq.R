@@ -103,6 +103,7 @@ saaq_data_table_aggregates <- function(csv_path) {
   data <- data.table::fread(
     csv_path,
     select = required,
+    colClasses = list(character = setdiff(required, "MASSE_NETTE"), numeric = "MASSE_NETTE"),
     na.strings = c("", "NA"),
     showProgress = TRUE
   )
@@ -159,6 +160,7 @@ standardise_saaq_summary <- function(
     file.path(root, "references", "saaq_fuel_codes.csv"),
     show_col_types = FALSE,
     progress = FALSE,
+    col_types = readr::cols(.default = readr::col_character()),
     na = character()
   ) |>
     dplyr::transmute(
@@ -243,7 +245,8 @@ standardise_saaq_summary <- function(
     ) |>
     dplyr::relocate(saaq_fuel_type, .after = saaq_fuel_code)
 
-  result
+  result |>
+    dplyr::arrange(.data$saaq_group_id)
 }
 
 read_saaq_summaries <- function(
@@ -269,6 +272,12 @@ read_saaq_summaries <- function(
     return(list(global = empty, regional = empty, source_path = NA_character_))
   }
 
+  metadata_path <- file.path(dirname(csv_path), "collection_metadata.json")
+  if (!file.exists(metadata_path)) stop("Métadonnées SAAQ absentes.")
+  metadata <- jsonlite::read_json(metadata_path, simplifyVector = TRUE)
+  if (!identical(sha256_file(csv_path), metadata$sha256)) {
+    stop("Empreinte SAAQ différente de la collecte.", call. = FALSE)
+  }
   data_table_aggregates <- saaq_data_table_aggregates(csv_path)
   global_raw <- data_table_aggregates$global_raw
   regional_raw <- data_table_aggregates$regional_raw

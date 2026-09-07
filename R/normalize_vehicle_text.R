@@ -111,31 +111,18 @@ extract_drive_type <- function(model) {
   )
 }
 
+vehicle_class_lookup <- function(vehicle_class) {
+  lookup <- readr::read_csv("references/rncan_vehicle_classes.csv",
+                            show_col_types = FALSE, col_types = "ccc")
+  lookup[match(vehicle_class, lookup$source_label), ]
+}
+
 classify_vehicle_class <- function(vehicle_class) {
-  x <- normalize_vehicle_text(vehicle_class)
-  dplyr::case_when(
-    stringr::str_detect(x, "PICKUP") ~ "pickup",
-    stringr::str_detect(x, "SPORT UTILITY|(^| )SUV($| )") ~ "suv",
-    stringr::str_detect(x, "MINIVAN|PASSENGER VAN|CARGO VAN|(^| )VAN($| )") ~ "van",
-    stringr::str_detect(x, "STATION WAGON") ~ "wagon",
-    stringr::str_detect(x, "TWO SEATER|MINICOMPACT|SUBCOMPACT|COMPACT|MID SIZE|FULL SIZE") ~ "passenger_car",
-    is.na(x) ~ NA_character_,
-    TRUE ~ "other"
-  )
+  vehicle_class_lookup(vehicle_class)$vehicle_class_group
 }
 
 classify_vehicle_size <- function(vehicle_class) {
-  x <- normalize_vehicle_text(vehicle_class)
-  dplyr::case_when(
-    stringr::str_detect(x, "MINICOMPACT") ~ "minicompact",
-    stringr::str_detect(x, "SUBCOMPACT") ~ "subcompact",
-    stringr::str_detect(x, "COMPACT") ~ "compact",
-    stringr::str_detect(x, "MID SIZE") ~ "mid_size",
-    stringr::str_detect(x, "FULL SIZE") ~ "full_size",
-    stringr::str_detect(x, "SMALL") ~ "small",
-    stringr::str_detect(x, "STANDARD") ~ "standard",
-    TRUE ~ NA_character_
-  )
+  vehicle_class_lookup(vehicle_class)$vehicle_size_group
 }
 
 classify_powertrain <- function(source_family, fuel_type, model) {
@@ -143,7 +130,7 @@ classify_powertrain <- function(source_family, fuel_type, model) {
   dplyr::case_when(
     source_family == "rncan_bev" ~ "BEV",
     source_family == "rncan_phev" ~ "PHEV",
-    stringr::str_detect(model_key, "(^| )(HYBRID|HEV)($| )") ~ "HEV_text_derived",
+    stringr::str_detect(model_key, "(^| )(HYBRID|HYBRIDE|HEV)($| )") ~ "HEV_text_derived",
     fuel_type == "diesel" ~ "diesel",
     fuel_type %in% c("regular_gasoline", "premium_gasoline") ~ "gasoline",
     fuel_type == "e85" ~ "flex_fuel_e85",

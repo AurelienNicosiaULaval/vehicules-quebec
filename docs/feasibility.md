@@ -1,8 +1,10 @@
+> Document de conception du 25 juin 2026. Pour la version publiée et la procédure actuelle, consulter le README et docs/reproduction.md.
+
 # Diagnostic de faisabilité
 
-**Date de vérification : 2026-06-25**  
-**Conclusion : faisable seulement partiellement sans nouvelle table de
-correspondance; faisable avec jointures auditées pour un sous-ensemble.**
+Date de vérification : 2026-06-25
+Conclusion : faisable seulement partiellement sans nouvelle table de
+correspondance; faisable avec jointures auditées pour un sous-ensemble.
 
 ## 1. Résultat principal
 
@@ -25,11 +27,11 @@ version RNCan précise.
 
 Le projet adopte par conséquent trois niveaux :
 
-1. **Spécifications RNCan exactes** : une ligne par configuration publiée pour
+1. Spécifications RNCan exactes : une ligne par configuration publiée pour
    le marché canadien.
-2. **Agrégats SAAQ exacts** : comptes québécois par codes et caractéristiques
+2. Agrégats SAAQ exacts : comptes québécois par codes et caractéristiques
    administratives, sans décodage inventé.
-3. **Table intégrée prudente** : le compte SAAQ est rempli seulement lorsqu’une
+3. Table intégrée prudente : le compte SAAQ est rempli seulement lorsqu’une
    table de correspondance sourcée conduit à un candidat RNCan unique et sans
    contradiction de caractéristiques. Tous les autres comptes restent `NA`.
 
@@ -49,39 +51,39 @@ Les identifiants de ressources RNCan et les URL épinglées sont consignés dans
 
 ## 3. Matrice des champs
 
-Légende : **Oui** = champ directement publié; **Codé** = publié mais non
-interprétable comme libellé sans table; **Dérivé** = calcul ou regroupement
-explicite; **Non** = absent de la source centrale.
+Légende : Oui = champ directement publié; Codé = publié mais non
+interprétable comme libellé sans table; Dérivé = calcul ou regroupement
+explicite; Non = absent de la source centrale.
 
 | Champ | SAAQ | RNCan standard | RNCan BEV/PHEV | Transports Canada CVS |
 |---|---:|---:|---:|---:|
-| Marque | **Codé, 5 caractères** (`MARQ_VEH`; souvent abrégé) | **Oui** | **Oui** | **Oui** |
-| Modèle | **Codé, 5 caractères** (`MODEL_VEH`; souvent tronqué) | **Oui** | **Oui** | **Oui** |
-| Année-modèle | **Oui** | **Oui** | **Oui** | **Oui** |
-| Type/classe de véhicule | **Oui**, catégories SAAQ | **Oui** | **Oui** | Partiel selon ressource |
-| Carburant/propulsion | **Oui depuis 2017** | **Oui** | **Oui** | Non central |
-| Consommation ville | Non | **Oui, L/100 km** | Oui, unités propres au mode | Non |
-| Consommation route | Non | **Oui, L/100 km** | Oui, unités propres au mode | Non |
-| Consommation combinée | Non | **Oui** | **Oui** | Non |
-| mpg combiné | Non | **Oui**, gallon impérial | Selon ressource | Non |
-| Émissions de CO2 | Non | **Oui** | **Oui** | Non |
-| Cote CO2 | Non | **Oui pour les années visées** | **Oui** | Non |
-| Cote smog | Non | **Oui pour les années visées** | **Oui** | Non |
-| Cylindrée | **Oui, cm³** | **Oui, L** | Oui pour PHEV; non applicable BEV | Non central |
-| Nombre de cylindres | **Oui, code 1–8; 9 = autre** | **Oui** | Oui pour PHEV; non applicable BEV | Non central |
-| Transmission | Non | **Oui** | **Oui** | Non central |
+| Marque | Codé, 5 caractères (`MARQ_VEH`; souvent abrégé) | Oui | Oui | Oui |
+| Modèle | Codé, 5 caractères (`MODEL_VEH`; souvent tronqué) | Oui | Oui | Oui |
+| Année-modèle | Oui | Oui | Oui | Oui |
+| Type/classe de véhicule | Oui, catégories SAAQ | Oui | Oui | Partiel selon ressource |
+| Carburant/propulsion | Oui depuis 2017 | Oui | Oui | Non central |
+| Consommation ville | Non | Oui, L/100 km | Oui, unités propres au mode | Non |
+| Consommation route | Non | Oui, L/100 km | Oui, unités propres au mode | Non |
+| Consommation combinée | Non | Oui | Oui | Non |
+| mpg combiné | Non | Oui, gallon impérial | Selon ressource | Non |
+| Émissions de CO2 | Non | Oui | Oui | Non |
+| Cote CO2 | Non | Oui pour les années visées | Oui | Non |
+| Cote smog | Non | Oui pour les années visées | Oui | Non |
+| Cylindrée | Oui, cm³ | Oui, L | Oui pour PHEV; non applicable BEV | Non central |
+| Nombre de cylindres | Oui, code 1–8; 9 = autre | Oui | Oui pour PHEV; non applicable BEV | Non central |
+| Transmission | Non | Oui | Oui | Non central |
 | Rouage | Non dédié | Non dédié; parfois dans le texte du modèle | Même limite | Non garanti |
-| Masse/poids | **Oui, masse nette** | Non | Non | **Masse à vide**, selon ressource |
-| Région québécoise | **Oui** | Non | Non | Non |
-| Nombre immatriculé | **Dérivé par comptage** | Non | Non | Non |
+| Masse/poids | Oui, masse nette | Non | Non | Masse à vide, selon ressource |
+| Région québécoise | Oui | Non | Non | Non |
+| Nombre immatriculé | Dérivé par comptage | Non | Non | Non |
 | Puissance thermique | Non | Non | Non | Non vérifiée |
-| Puissance électrique | Non | Non | **Motor (kW)** | Non central |
+| Puissance électrique | Non | Non | Motor (kW) | Non central |
 
 ## 4. Possibilité de jointure
 
 ### Jointure directe
 
-**Non, pas de façon générale.** Quelques codes SAAQ peuvent coïncider avec un
+Non, pas de façon générale. Quelques codes SAAQ peuvent coïncider avec un
 libellé RNCan après normalisation, mais cette coïncidence n’est pas une table de
 correspondance et ne règle ni les troncatures ni les variantes. Une jointure par
 année, cylindrée et cylindres seulement est souvent plusieurs-à-plusieurs et ne
@@ -89,7 +91,7 @@ démontre pas l’identité d’un véhicule.
 
 ### Jointure avec table de correspondance vérifiée
 
-**Oui, pour un sous-ensemble**, sous les conditions suivantes :
+Oui, pour un sous-ensemble, sous les conditions suivantes :
 
 - correspondance code SAAQ → marque/modèle avec source, millésimes et statut de
   vérification;
@@ -146,8 +148,8 @@ liquide; utiliser kWh/100 km ou Le/100 km dans des analyses séparées.
 
 | Produit | Faisabilité | Recommandation |
 |---|---|---|
-| Table RNCan comparable à `mtcars` pour caractéristiques/consommation | **Faisable directement** | Produire `rncan_vehicle_specs.csv` |
-| Agrégat du parc québécois avec mécanique et région | **Faisable directement** | Produire `saaq_registration_summary*.csv` |
-| Configurations RNCan avec nombre exact immatriculé au Québec | **Faisable seulement partiellement** | Remplir uniquement les jointures uniques et auditées |
-| Petit jeu pédagogique diversifié | **Faisable** | Échantillonnage déterministe, statut Québec explicite |
-| Véritable clone de `mtcars` avec puissance et poids par version | **Non faisable avec les sources centrales seules** | Utiliser moteur kW, masse SAAQ agrégée ou CVS facultatif; laisser la puissance thermique absente |
+| Table RNCan comparable à `mtcars` pour caractéristiques/consommation | Faisable directement | Produire `rncan_vehicle_specs.csv` |
+| Agrégat du parc québécois avec mécanique et région | Faisable directement | Produire `saaq_registration_summary*.csv` |
+| Configurations RNCan avec nombre exact immatriculé au Québec | Faisable seulement partiellement | Remplir uniquement les jointures uniques et auditées |
+| Petit jeu pédagogique diversifié | Faisable | Échantillonnage déterministe, statut Québec explicite |
+| Véritable clone de `mtcars` avec puissance et poids par version | Non faisable avec les sources centrales seules | Utiliser moteur kW, masse SAAQ agrégée ou CVS facultatif; laisser la puissance thermique absente |

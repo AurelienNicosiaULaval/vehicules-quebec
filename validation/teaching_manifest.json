@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "rncan_collection": "2026-07-02",
+  "rncan_model_year": 2025,
+  "source_rows": 693,
+  "eligible_rows": 677,
+  "distinct_named_models": 591,
+  "selected_rows": 64,
+  "selected_columns": 19,
+  "qc_rows": 152,
+  "qc_vehicle_count": 5507330,
+  "rule": "2025; standard RNCan; gasoline X/Z; complete core; one configuration per make/model by SHA256; round robin class x transmission; target=64",
+  "small_sha256": "170b7d662fe7ccf98ccf54c2a0e127648da36d0cb2d8554c5b7d39cefe238260",
+  "qc_sha256": "4fb91d7190b9c6c62d97c2d23168a1c318206a969bfe3d255bc0d1c42cf30dca",
+  "rncan_source_sha256": "34031b8d40f89d4719f6e0b3c022567adfe365d6a44d6283316cd0f1b26f1148"
+}

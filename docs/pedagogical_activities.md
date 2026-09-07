@@ -1,3 +1,5 @@
+> Document de conception du 25 juin 2026. Pour la version publiée et la procédure actuelle, consulter le README et docs/reproduction.md.
+
 # Activités pédagogiques proposées
 
 Chaque activité doit commencer par la lecture de `join_quality`,
@@ -6,7 +8,7 @@ manquantes ne sont pas des zéros.
 
 ## 1. Exploration descriptive de la consommation
 
-**Niveau : STT-1100 / cours R**
+Niveau : STT-1100 / cours R
 
 - Calculer moyenne, médiane, quartiles et écart-type de
   `combined_l_per_100km` par `vehicle_class_group`.
@@ -17,7 +19,7 @@ manquantes ne sont pas des zéros.
 
 ## 2. Régression de la consommation
 
-**Niveau : STT-2200**
+Niveau : STT-2200
 
 - Sous-échantillonner les véhicules thermiques avec cylindrée connue.
 - Ajuster `combined_l_per_100km ~ engine_size_l + cylinders + vehicle_class_group`.
@@ -28,7 +30,7 @@ manquantes ne sont pas des zéros.
 
 ## 3. Essence, hybride et électrique
 
-**Niveau : STT-1100 / STT-2200**
+Niveau : STT-1100 / STT-2200
 
 - Construire des groupes avec `powertrain_group`.
 - Comparer séparément L/100 km, kWh/100 km et Le/100 km.
@@ -41,7 +43,7 @@ manquantes ne sont pas des zéros.
 
 ## 4. Visualisation consommation–émissions
 
-**Niveau : cours R / STT-1100**
+Niveau : cours R / STT-1100
 
 - Nuage de points `combined_l_per_100km` contre `co2_g_per_km`.
 - Ajouter forme ou facette par carburant et classe de véhicule.
@@ -51,7 +53,7 @@ manquantes ne sont pas des zéros.
 
 ## 5. Analyse en composantes principales
 
-**Niveau : STT-2200 / science des données**
+Niveau : STT-2200 / science des données
 
 - Choisir un sous-ensemble cohérent de variables numériques : cylindrée,
   cylindres, consommations, CO2 et cotes.
@@ -64,7 +66,7 @@ manquantes ne sont pas des zéros.
 
 ## 6. Classification du type de véhicule
 
-**Niveau : science des données / projet avancé**
+Niveau : science des données / projet avancé
 
 - Prédire `vehicle_class_group` à partir des caractéristiques numériques et du
   carburant.
@@ -77,7 +79,7 @@ manquantes ne sont pas des zéros.
 
 ## 7. Comparaison avec `mtcars`
 
-**Niveau : cours R / STT-1100**
+Niveau : cours R / STT-1100
 
 - Harmoniser temporairement les unités : mpg impérial RNCan et mpg américain de
   `mtcars` ne doivent pas être confondus.
@@ -95,7 +97,7 @@ manquantes ne sont pas des zéros.
 
 ## 8. Limites des jointures de données ouvertes
 
-**Niveau : science des données / projet avancé**
+Niveau : science des données / projet avancé
 
 - Examiner `join_candidates.csv` et `unmatched_saaq.csv`.
 - Calculer plusieurs taux : configurations RNCan confirmées, groupes SAAQ

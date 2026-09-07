@@ -115,7 +115,7 @@ main <- joined$main |>
       "body_type_origin", "city_l_per_100km", "highway_l_per_100km",
       "combined_l_per_100km", "combined_mpg_source", "combined_mpg",
       "combined_mpg_origin", "city_kwh_per_100km", "highway_kwh_per_100km",
-      "combined_kwh_per_100km", "city_le_per_100km", "highway_le_per_100km",
+      "combined_kwh_per_100km", "blended_l_per_100km", "city_le_per_100km", "highway_le_per_100km",
       "combined_le_per_100km", "electric_range_km", "secondary_range_km",
       "recharge_time_h", "co2_g_per_km", "co2_rating", "smog_rating",
       "number_registered_qc", "registration_count_grain", "region_qc",
@@ -245,7 +245,7 @@ run_manifest <- list(
   cleaning_script_sha256 = sha256_file(
     file.path(root, "scripts", "02_clean_vehicle_data.R")
   ),
-  saaq_raw_path = saaq$source_path,
+  saaq_raw_path = if (is.na(saaq$source_path)) NA_character_ else as.character(fs::path_rel(saaq$source_path, root)),
   saaq_raw_sha256 = saaq_raw_sha256,
   verified_crosswalk_rows = nrow(crosswalk),
   small_sample_target_n = target_n,

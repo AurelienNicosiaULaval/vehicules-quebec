@@ -1,368 +1,185 @@
 ---
-title: "Rapport de validation — vehicules-quebec"
-subtitle: "Contrôles non destructifs de contenu, de jointure et d’unités"
-date: today
+title: "Validation des données sur les véhicules"
+subtitle: "Version 1.0.0 : configurations canadiennes et parc québécois"
+date: 2026-09-07
 lang: fr
 format:
   html:
     toc: true
-    toc-depth: 3
-    code-fold: true
     embed-resources: true
+    code-fold: true
 execute:
-  echo: true
-  warning: true
+  warning: false
   message: false
-params:
-  data_path: "data_clean/vehicules_quebec.csv"
-  small_path: "data_clean/vehicules_quebec_small.csv"
-  candidates_path: "data_intermediate/join_candidates.csv"
-  unmatched_path: "data_intermediate/unmatched_saaq.csv"
-  join_summary_path: "data_intermediate/join_summary.csv"
-  dictionary_path: "data_clean/vehicules_quebec_dictionary.csv"
 ---
 
-## Portée
+## Ce que la validation établit
 
-Ce rapport signale les anomalies possibles; il ne remplace, ne tronque ni
-n’impute aucune valeur. Les cotes RNCan sont des valeurs issues de procédures
-d’essai normalisées. Les comptes SAAQ ne sont considérés comme appariés que
-lorsqu’une configuration unique satisfait la règle documentée.
+La version distribuée contient un jeu de 64 configurations RNCan de 2025,
+une table région-carburant SAAQ et une activité reproductible. Les fichiers
+sources, la sélection et les contrôles sont documentés. Les comptes québécois
+ne sont pas attribués aux configurations canadiennes.
 
 ```{r}
-library(tidyverse)
-library(janitor)
+library(readr)
+library(dplyr)
+library(jsonlite)
 library(knitr)
-
-fs::dir_create("validation")
-
-required_files <- c(params$data_path, params$dictionary_path)
-missing_files <- required_files[!file.exists(required_files)]
-if (length(missing_files) > 0) {
-  stop("Fichiers requis absents : ", paste(missing_files, collapse = ", "))
-}
-
-vehicles <- read_csv(params$data_path, show_col_types = FALSE, na = c("", "NA"))
-dictionary <- read_csv(params$dictionary_path, show_col_types = FALSE)
-small <- if (file.exists(params$small_path))
-  read_csv(params$small_path, show_col_types = FALSE, na = c("", "NA")) else tibble()
-candidates <- if (file.exists(params$candidates_path))
-  read_csv(params$candidates_path, show_col_types = FALSE, na = c("", "NA")) else tibble()
-unmatched <- if (file.exists(params$unmatched_path))
-  read_csv(params$unmatched_path, show_col_types = FALSE, na = c("", "NA")) else tibble()
-join_summary <- if (file.exists(params$join_summary_path))
-  read_csv(params$join_summary_path, show_col_types = FALSE) else tibble()
-
-pct <- function(x, digits = 1) {
-  ifelse(is.na(x), NA_character_, paste0(format(round(100 * x, digits), nsmall = digits), " %"))
-}
+library(ggplot2)
+audit <- read_json("validation/source_verification.json", simplifyVector = TRUE)
+profile <- read_csv("validation/release_profile.csv", show_col_types = FALSE)
+small <- read_csv("data_clean/vehicules_canada_2025.csv", show_col_types = FALSE)
+qc <- read_csv("data_clean/parc_quebec_2022.csv", show_col_types = FALSE,
+  col_types = cols(.default = col_guess(), region_qc = col_character(), saaq_fuel_code = col_character()))
+stopifnot(all(audit$checks$passed))
+value <- function(metric) profile$value[profile$metric == metric]
+number <- function(x) format(x, big.mark = " ", scientific = FALSE, trim = TRUE)
 ```
 
-## Résumé de la couverture
+Les `r nrow(audit$checks)` contrôles complets ont réussi. Un écart mineur
+entre les cotes combinée, urbaine et routière est explicitement conservé et
+détaillé ci-dessous; la réussite des contrôles ne signifie pas que les sources
+sont exemptes de toute anomalie.
+
+## Périmètres et unités d’observation
+
+| Produit | Population et grain | Limite |
+|---|---|---|
+| Jeu canadien 2025 | 64 configurations, une par marque-modèle nommé | Sélection pédagogique, pas des ventes ni des immatriculations |
+| Table RNCan complète | `r number(value("rncan_rows"))` configurations de 1995 à 2026 | Millésimes et modes d’essai différents |
+| Fichier brut SAAQ | `r number(value("saaq_raw_rows"))` véhicules autorisés à circuler au 31 décembre 2022 | Tous les types du fichier administratif |
+| Portrait Québec distribué | `r number(value("saaq_scope_rows"))` véhicules, regroupés en `r nrow(qc)` cellules région-carburant | Type AU, classes PAU, CAU ou RAU uniquement |
+
+La table québécoise conserve `r number(value("saaq_scope_missing_region"))`
+véhicules sans région renseignée. Ces véhicules entrent dans le total du
+périmètre mais ne doivent pas être attribués arbitrairement à une région.
+
+## Vérification des sources
+
+Les 64 configurations ont été rapprochées des lignes originales du JSON RNCan
+2025. Les marques, modèles, classes, cylindrées, cylindres, transmissions,
+consommations et cotes correspondent aux cellules publiées. Le JSON original
+est inclus dans la trousse. Les 152 comptes SAAQ ont été rapprochés d’un comptage
+indépendant dans les lignes brutes, après application du périmètre documenté.
+
+Les identifiants RNCan et SAAQ ont été vérifiés sans doublons. Le vérificateur
+contrôle les empreintes des fichiers bruts avant de les utiliser. La version
+SAAQ téléchargée à nouveau le 7 septembre 2026 a exactement l’empreinte de la
+collecte du 25 juin 2026. Les données RNCan restent celles du 2 juillet 2026,
+même si le portail propose des mises à jour plus récentes.
 
 ```{r}
-confirmed <- sum(vehicles$qc_presence_status == "confirmed_by_exact_audited_join", na.rm = TRUE)
-overview <- tibble(
-  indicateur = c(
-    "Lignes", "Marques", "Modèles (marque–modèle)", "Années-modèles", "Types de carburant",
-    "Configurations avec preuve Québec exacte", "Taux de preuve Québec au niveau des lignes",
-    "Lignes du petit jeu"
-  ),
-  valeur = c(
-    nrow(vehicles),
-    n_distinct(vehicles$make, na.rm = TRUE),
-    {
-      complete_identity <- !is.na(vehicles$make) & !is.na(vehicles$model)
-      n_distinct(paste(
-        vehicles$make[complete_identity],
-        vehicles$model[complete_identity],
-        sep = "|"
-      ))
-    },
-    n_distinct(vehicles$model_year, na.rm = TRUE),
-    n_distinct(vehicles$fuel_type, na.rm = TRUE),
-    confirmed,
-    pct(if (nrow(vehicles) == 0) NA_real_ else confirmed / nrow(vehicles)),
-    nrow(small)
-  )
-)
-kable(overview)
+kable(audit$checks, col.names = c("Contrôle", "Réussi"))
 ```
 
-Le taux précédent est un taux au niveau des **configurations RNCan**, pas un
-taux de couverture du parc automobile québécois. Une même famille de modèle
-peut comporter plusieurs versions RNCan et une SAAQ ne publie pas la
-transmission; cette différence de grain doit rester visible.
-
-### Résumé de la jointure SAAQ–RNCan
+## Sélection et complétude
 
 ```{r}
-if (nrow(join_summary) > 0) {
-  kable(join_summary)
-} else {
-  cat("Aucun résumé de jointure disponible.\n")
-}
+selection <- read_csv("validation/teaching_selection_summary.csv", show_col_types = FALSE)
+kable(selection, col.names = c("Décision", "Configurations"),
+      format.args = list(big.mark = " ", scientific = FALSE))
+small |> count(vehicle_class_group) |> kable(col.names = c("Classe", "Configurations"))
 ```
+
+Le jeu principal est complet sur ses 19 colonnes. Sur les 693 configurations
+de la source 2025, 677 sont admissibles au périmètre essence et aux mesures
+requises. Une configuration par modèle nommé laisse 591 candidats. Un
+classement par hash et un tourniquet classe-transmission retiennent les 64 lignes.
+La procédure ne repose pas sur un tirage aléatoire représentant le marché.
+
+Le jeu de diversité historique de 64 lignes a été reconstruit après correction
+du classement bilingue. Ses identifiants sélectionnés peuvent donc différer de
+ceux des sorties exploratoires de juin et juillet. Aucune version publique
+figée de ce petit jeu ne précédait la version 1.0.0.
+
+## Écart de cohérence conservé
 
 ```{r}
-if (all(c("saaq_group_id", "candidate_status") %in% names(candidates))) {
-  candidate_status_table <- candidates |>
-    count(candidate_status, sort = TRUE, name = "n_candidate_rows")
-  kable(candidate_status_table)
-} else {
-  cat("Aucune table détaillée de candidats disponible.\n")
-}
+review <- read_csv("validation/cote_combinee_review.csv", show_col_types = FALSE)
+review |>
+  select(make, model, city_l_per_100km, highway_l_per_100km,
+         combined_l_per_100km, weighted_from_published, difference) |>
+  kable(digits = 3, col.names = c("Marque", "Modèle", "Ville", "Route", "Combinée", "Calcul 55/45", "Écart"))
 ```
 
-## Valeurs manquantes
+Pour le Ford Maverick Hybrid, la combinaison des cotes affichées est
+$0{,}55\times5{,}6 + 0{,}45\times6{,}7 = 6{,}095$ L/100 km, tandis que RNCan
+publie 6,2. L’écart de 0,105 est légèrement supérieur à la borne de 0,1 obtenue
+si chaque cote provient uniquement d’un arrondi au dixième et si la combinaison
+utilise exactement les poids 55/45. La cause de ce dépassement n’est pas établie.
+Il est signalé pour permettre la révision, sans remplacer les valeurs sources.
+Il ne remet pas en cause leur transcription fidèle.
+
+## Corrections apportées au traitement
+
+Les classes françaises de deux ressources n’étaient pas toutes reconnues par
+les règles anglaises. Une table bilingue explicite couvre maintenant les 32
+libellés observés, y compris les familiales, camionnettes, fourgons et véhicules
+à usage spécial. Un libellé nouveau provoque un arrêt demandant une révision.
+Le repérage textuel des hybrides reconnaît aussi « Hybride »; il demeure non
+exhaustif et ne permet pas de qualifier tous les autres véhicules de non hybrides.
+
+Les comptes SAAQ restent séparés : zéro configuration RNCan est confirmée par
+une jointure exacte auditée. Les codes de marque et de modèle de la SAAQ ne sont
+pas assimilés automatiquement à des noms complets. Une absence de jointure
+n’est pas une preuve d’absence d’un modèle au Québec.
+
+Les annotations PHEV de la forme « [kWh + L]/100 km » sont maintenant
+reconnues. Les 400 configurations PHEV conservent leur composante électrique;
+361 annotations fournissent aussi une composante liquide explicite, dans
+`blended_l_per_100km`. Cette composante se distingue de la consommation en
+mode essence seul.
+
+Les Le/100 km, kWh/100 km et L/100 km ne sont pas fusionnés. Les cotes CO2 à
+l’échappement des véhicules électriques ne représentent pas les émissions du
+cycle de vie. Les moyennes de masse des agrégats détaillés ne servent pas au
+portrait pédagogique distribué.
+
+## Données québécoises conservées
 
 ```{r}
-missingness <- tibble(
-  variable = names(vehicles),
-  n_missing = map_int(vehicles, ~ sum(is.na(.x))),
-  pct_missing = map_dbl(
-    vehicles,
-    ~ if (nrow(vehicles) == 0) NA_real_ else mean(is.na(.x)) * 100
-  )
-) |>
-  arrange(desc(pct_missing), variable)
-
-kable(missingness, digits = 1)
-write_csv(missingness, "validation/missingness_from_qmd.csv", na = "")
+qc |> group_by(saaq_fuel_type) |>
+  summarise(vehicules = sum(number_registered_qc), .groups = "drop") |>
+  arrange(desc(vehicules)) |>
+  kable(col.names = c("Carburant déclaré", "Véhicules"),
+        format.args = list(big.mark = " ", scientific = FALSE))
 ```
 
-Une forte proportion de valeurs manquantes peut être attendue : par exemple,
-les cylindres et la cylindrée sont non applicables aux véhicules électriques,
-et les comptes québécois restent absents lorsqu’aucune jointure exacte n’est
-possible.
+Les modalités rares, notamment « Non-propulsé » et « Méthanol », restent
+celles de l’administration. Cette validation vérifie le comptage et la
+transcription, pas chaque caractéristique de chaque véhicule. Les pourcentages
+éventuels doivent préciser ce périmètre et leur traitement des régions manquantes.
 
-## Distribution de la consommation
+## Aptitude pédagogique et limites
+
+L’activité produit les statistiques par classe, les distributions, le nuage de
+points et un modèle linéaire exploratoire avec validation par retrait d’une
+observation. La comparaison à une moyenne d’apprentissage sert de référence.
+Aucune expérience en classe ni efficacité pédagogique mesurée n’est revendiquée.
+
+Le fichier ne remplace pas toutes les variables de `mtcars`. La puissance
+thermique et la masse des configurations RNCan ne sont pas établies. Plusieurs
+colonnes sont liées par construction : les mpg convertis, les consommations
+et certaines cotes ne doivent pas être traités comme autant de caractéristiques
+indépendantes pour prédire une consommation inconnue.
+
+## Reproduire le contrôle
+
+Ouvrir le projet, installer les dépendances documentées, puis exécuter :
 
 ```{r}
-fuel_consumption <- vehicles |>
-  filter(!is.na(combined_l_per_100km))
-
-if (nrow(fuel_consumption) > 0) {
-  ggplot(fuel_consumption, aes(combined_l_per_100km)) +
-    geom_histogram(bins = 30) +
-    labs(
-      x = "Consommation combinée (L/100 km)", y = "Nombre de configurations",
-      title = "Distribution de la consommation de carburant liquide"
-    )
-} else {
-  cat("Aucune valeur L/100 km disponible.\n")
-}
+#| eval: false
+source("scripts/04_validate_release.R")
 ```
 
-```{r}
-if (nrow(fuel_consumption) > 0) {
-  fuel_consumption |>
-    group_by(vehicle_class_group) |>
-    summarise(
-      n = n(),
-      moyenne = mean(combined_l_per_100km, na.rm = TRUE),
-      mediane = median(combined_l_per_100km, na.rm = TRUE),
-      q1 = quantile(combined_l_per_100km, 0.25, na.rm = TRUE),
-      q3 = quantile(combined_l_per_100km, 0.75, na.rm = TRUE),
-      .groups = "drop"
-    ) |>
-    arrange(mediane) |>
-    kable(digits = 2)
-}
-```
+Le mode portable contrôle le petit jeu contre le JSON livré et vérifie les
+empreintes des fichiers liés à l’audit complet. Le mode complet, les sources
+figées et les commandes de reconstruction sont décrits dans
+[le guide de reproduction](reproduction.md). Les attributions se trouvent dans
+[DATA_LICENSES.md](../DATA_LICENSES.md).
 
-## Distribution des émissions de CO2
+## Sources
 
-```{r}
-co2_data <- vehicles |>
-  filter(!is.na(co2_g_per_km))
-
-if (nrow(co2_data) > 0) {
-  ggplot(co2_data, aes(co2_g_per_km)) +
-    geom_histogram(bins = 30) +
-    labs(
-      x = "CO2 à l’échappement (g/km)", y = "Nombre de configurations",
-      title = "Distribution des émissions combinées de CO2"
-    )
-} else {
-  cat("Aucune valeur de CO2 disponible.\n")
-}
-```
-
-```{r}
-plot_data <- vehicles |>
-  filter(!is.na(combined_l_per_100km), !is.na(co2_g_per_km))
-if (nrow(plot_data) > 0) {
-  ggplot(plot_data, aes(combined_l_per_100km, co2_g_per_km)) +
-    geom_point(alpha = 0.5) +
-    labs(
-      x = "Consommation combinée (L/100 km)",
-      y = "CO2 à l’échappement (g/km)",
-      title = "Consommation et émissions"
-    )
-}
-```
-
-## Cohérence des unités et valeurs
-
-Les bornes ci-dessous sont des bornes de **révision**, volontairement larges.
-Une ligne signalée n’est pas automatiquement erronée.
-
-```{r}
-current_year <- as.integer(format(Sys.Date(), "%Y"))
-checks <- vehicles |>
-  transmute(
-    vehicle_id, make, model, model_year,
-    flag_year = !is.na(model_year) & (model_year < 1900 | model_year > current_year + 1),
-    flag_engine = !is.na(engine_size_l) & (engine_size_l < 0.1 | engine_size_l > 10),
-    flag_consumption = !is.na(combined_l_per_100km) &
-      (combined_l_per_100km < 0.5 | combined_l_per_100km > 50),
-    flag_co2 = !is.na(co2_g_per_km) & (co2_g_per_km < 0 | co2_g_per_km > 1000),
-    flag_co2_rating = !is.na(co2_rating) & !(co2_rating %in% 1:10),
-    flag_smog_rating = !is.na(smog_rating) & !(smog_rating %in% 1:10),
-    flag_combined_interval =
-      !is.na(city_l_per_100km) & !is.na(highway_l_per_100km) &
-      !is.na(combined_l_per_100km) &
-      (combined_l_per_100km < pmin(city_l_per_100km, highway_l_per_100km) - 0.2 |
-       combined_l_per_100km > pmax(city_l_per_100km, highway_l_per_100km) + 0.2),
-    flag_registration_count = !is.na(number_registered_qc) &
-      (number_registered_qc < 0 | number_registered_qc != round(number_registered_qc))
-  )
-
-check_summary <- checks |>
-  summarise(across(starts_with("flag_"), ~ sum(.x, na.rm = TRUE))) |>
-  pivot_longer(everything(), names_to = "controle", values_to = "n_lignes") |>
-  arrange(desc(n_lignes))
-kable(check_summary)
-```
-
-### Vérification de la conversion mpg
-
-```{r}
-mpg_check <- vehicles |>
-  filter(
-    combined_mpg_origin == "derived_282.48_divided_by_combined_l_per_100km",
-    !is.na(combined_l_per_100km), !is.na(combined_mpg)
-  ) |>
-  mutate(
-    mpg_recalculated = 282.48 / combined_l_per_100km,
-    absolute_difference = abs(combined_mpg - mpg_recalculated)
-  )
-
-if (nrow(mpg_check) > 0) {
-  kable(
-    mpg_check |>
-      summarise(
-        n = n(),
-        max_absolute_difference = max(absolute_difference, na.rm = TRUE)
-      ),
-    digits = 8
-  )
-} else {
-  cat("Aucune cote mpg dérivée à vérifier.\n")
-}
-```
-
-## Lignes suspectes
-
-```{r}
-suspect_rows <- checks |>
-  filter(if_any(starts_with("flag_"), ~ .x %in% TRUE))
-
-kable(head(suspect_rows, 100))
-write_csv(suspect_rows, "validation/suspect_rows_from_qmd.csv", na = "")
-```
-
-## Doublons d’identifiant
-
-```{r}
-duplicate_ids <- vehicles |>
-  count(vehicle_id, sort = TRUE) |>
-  filter(n > 1)
-kable(duplicate_ids)
-```
-
-## Cas SAAQ non appariés
-
-```{r}
-if (nrow(unmatched) > 0 && "unmatched_reason" %in% names(unmatched)) {
-  unmatched_summary <- unmatched |>
-    group_by(unmatched_reason) |>
-    summarise(
-      n_groups = n(),
-      n_vehicles = if ("number_registered_qc" %in% names(unmatched))
-        sum(number_registered_qc, na.rm = TRUE) else NA_real_,
-      .groups = "drop"
-    ) |>
-    arrange(desc(n_vehicles), desc(n_groups))
-  kable(unmatched_summary)
-  write_csv(unmatched_summary, "validation/unmatched_summary_from_qmd.csv", na = "")
-} else {
-  cat("Aucune table de non-appariés disponible.\n")
-}
-```
-
-```{r}
-if (nrow(unmatched) > 0) {
-  kable(head(unmatched, 100))
-}
-```
-
-## Couverture du petit jeu pédagogique
-
-```{r}
-if (nrow(small) > 0) {
-  coverage <- tibble(
-    critere = c(
-      "Compactes", "Automobiles", "VUS", "Camionnettes",
-      "Hybrides ou PHEV", "Électriques à batterie", "Essence",
-      "Millésime 2014 ou antérieur", "Millésime 2019 ou ultérieur"
-    ),
-    present = c(
-      any(
-        small$vehicle_class_group == "passenger_car" &
-          small$vehicle_size_group %in% c("minicompact", "subcompact", "compact"),
-        na.rm = TRUE
-      ),
-      any(small$vehicle_class_group == "passenger_car", na.rm = TRUE),
-      any(small$vehicle_class_group == "suv", na.rm = TRUE),
-      any(small$vehicle_class_group == "pickup", na.rm = TRUE),
-      any(small$powertrain_group %in% c("HEV_text_derived", "PHEV"), na.rm = TRUE),
-      any(small$powertrain_group == "BEV", na.rm = TRUE),
-      any(small$powertrain_group == "gasoline", na.rm = TRUE),
-      any(small$model_year <= 2014, na.rm = TRUE),
-      any(small$model_year >= 2019, na.rm = TRUE)
-    )
-  )
-  kable(coverage)
-} else {
-  cat("Le petit jeu est vide. En mode Québec strict, cela peut indiquer qu’aucune jointure exacte n’est encore disponible.\n")
-}
-```
-
-## Dictionnaire et provenance
-
-```{r}
-required_dictionary_fields <- c(
-  "variable", "type", "unit", "description", "data_role",
-  "primary_source", "derivation_or_rule", "missingness_policy", "quality_checks"
-)
-dictionary_check <- tibble(
-  test = c("Colonnes requises du dictionnaire", "Variables du jeu documentées"),
-  success = c(
-    all(required_dictionary_fields %in% names(dictionary)),
-    all(names(vehicles) %in% dictionary$variable)
-  ),
-  detail = c(
-    paste(setdiff(required_dictionary_fields, names(dictionary)), collapse = ", "),
-    paste(setdiff(names(vehicles), dictionary$variable), collapse = ", ")
-  )
-)
-kable(dictionary_check)
-```
-
-## Reproductibilité
-
-```{r}
-cat(paste(capture.output(sessionInfo()), collapse = "\n"))
-```
+- RNCan (2026), [Cotes de consommation de carburant](https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64), collecte du 2 juillet 2026.
+- RNCan, [Explication des tableaux](https://ressources-naturelles.canada.ca/efficacite-energetique/efficacite-energetique-transports/vehicules-personnels/explication-tableaux), consultée le 7 septembre 2026.
+- SAAQ (2023), [Documentation des véhicules en circulation](https://www.donneesquebec.ca/recherche/dataset/4aea7984-10ec-4d4f-80e4-5bb9a0006996/resource/00ea3ac1-da3c-4ece-aa8c-a2e88529447b/download/vehicules-circulation-documentation.pdf), portrait 2022.
